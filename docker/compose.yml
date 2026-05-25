@@ -1,0 +1,11 @@
+services:
+  twenty-mcp:
+    build: .
+    environment:
+      - TWENTY_URL
+      - TWENTY_TOKEN
+      - TRANSPORT=streamable-http
+      - HOST=0.0.0.0
+      - PORT=8000
+    ports:
+      - "8000:8000"

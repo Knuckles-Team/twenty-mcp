@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "twenty_mcp": {
+      "command": "python",
+      "args": [
+        "-m",
+        "twenty_mcp.mcp_server"
+      ],
+      "env": {}
+    }
+  }
+}
