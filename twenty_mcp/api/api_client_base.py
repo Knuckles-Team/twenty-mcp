@@ -1,3 +1,4 @@
+import os
 from typing import Any
 from urllib.parse import urljoin
 
@@ -20,6 +21,7 @@ class ApiClientBase:
         self.password = password
         self._session = requests.Session()
         self._session.verify = verify
+        self.api_prefix = os.getenv("TWENTY_API_PREFIX", "/rest")
 
         if not verify:
             urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)

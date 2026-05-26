@@ -1,4 +1,5 @@
 """Main FastMCP server and tool registration."""
+
 import os
 import sys
 from typing import Any
@@ -14,6 +15,7 @@ from twenty_mcp.mcp.mcp_crm import register_crm_tools
 
 __version__ = "0.15.0"
 logger = get_logger(name="twenty_mcp")
+
 
 def get_mcp_instance() -> tuple[Any, ...]:
     load_dotenv(find_dotenv())
@@ -31,9 +33,22 @@ def get_mcp_instance() -> tuple[Any, ...]:
     if DEFAULT_CRMTOOL:
         register_crm_tools(mcp)
 
+    DEFAULT_METADATATOOL = to_boolean(os.getenv("METADATATOOL", "True"))
+    if DEFAULT_METADATATOOL:
+        from twenty_mcp.mcp.mcp_metadata import register_metadata_tools
+
+        register_metadata_tools(mcp)
+
+    DEFAULT_OAUTHTOOL = to_boolean(os.getenv("OAUTHTOOL", "True"))
+    if DEFAULT_OAUTHTOOL:
+        from twenty_mcp.mcp.mcp_oauth import register_oauth_tools
+
+        register_oauth_tools(mcp)
+
     for mw in middlewares:
         mcp.add_middleware(mw)
     return mcp, args, middlewares
+
 
 def mcp_server() -> None:
     mcp, args, middlewares = get_mcp_instance()
@@ -44,6 +59,7 @@ def mcp_server() -> None:
         mcp.run(transport="streamable-http", host=args.host, port=args.port)
     else:
         mcp.run(transport="stdio")
+
 
 if __name__ == "__main__":
     mcp_server()
