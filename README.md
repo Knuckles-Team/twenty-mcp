@@ -1,7 +1,7 @@
 # Twenty MCP
 
 [![Status](https://img.shields.io/badge/status-active-success)](https://github.com/genius-agents/twenty-mcp)
-[![Version](https://img.shields.io/badge/version-0.15.0-blue)](pyproject.toml)
+[![Version](https://img.shields.io/badge/version-0.16.0-blue)](pyproject.toml)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 Twenty CRM Customer Relationship Management system orchestrator. Built with the highest architectural standards, incorporating dynamic facades, custom API routing, and FastMCP tool decoration.
