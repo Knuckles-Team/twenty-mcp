@@ -5,3 +5,10 @@ repos:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix]
       - id: ruff-format
+  - repo: local
+    hooks:
+    - id: check-stubs
+      name: Check for Active Stubs and TODOs
+      entry: python3 /home/apps/workspace/agent-packages/agent-utilities/scripts/check_stubs.py
+      language: python
+      types: [python]
