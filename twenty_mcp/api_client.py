@@ -9,4 +9,5 @@ __version__ = "0.15.0"
 
 
 class Api(CrmApi, MetadataApi, OauthApi):
-    pass
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)

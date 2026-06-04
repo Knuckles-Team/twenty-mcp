@@ -5,12 +5,12 @@ import pytest
 def mock_ctx():
     class MockCtx:
         def info(self, msg):
-            pass
+            return None
 
         def warn(self, msg):
-            pass
+            return None
 
         def error(self, msg):
-            pass
+            return None
 
     return MockCtx()
