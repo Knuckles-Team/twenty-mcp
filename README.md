@@ -4,6 +4,10 @@
 [![Version](https://img.shields.io/badge/version-0.30.0-blue)](pyproject.toml)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
+> **Documentation** — Installation, deployment, usage across the MCP, API, and agent
+> interfaces, and guidance for provisioning the Twenty CRM platform are maintained in
+> the [official documentation](https://knuckles-team.github.io/twenty-mcp/).
+
 Twenty CRM Customer Relationship Management system orchestrator. Built with the highest architectural standards, incorporating dynamic facades, custom API routing, and FastMCP tool decoration.
 
 ## Table of Contents
@@ -163,6 +167,23 @@ A standard compose structure is provided inside the `docker/` folder. Build and 
 ```bash
 docker compose -f docker/compose.yml up --build -d
 ```
+
+---
+
+## Documentation
+
+The complete documentation is published as the
+[official documentation site](https://knuckles-team.github.io/twenty-mcp/) and is the
+recommended reference for installation, deployment, and day-to-day operation.
+
+| Page | Contents |
+|---|---|
+| [Installation](https://knuckles-team.github.io/twenty-mcp/installation/) | pip, source, extras, prebuilt Docker image |
+| [Deployment](https://knuckles-team.github.io/twenty-mcp/deployment/) | run the MCP and agent servers, Compose, Caddy + Technitium, env config |
+| [Usage](https://knuckles-team.github.io/twenty-mcp/usage/) | the MCP tools, the `Api` client, the A2A agent |
+| [Backing Platform](https://knuckles-team.github.io/twenty-mcp/platform/) | deploy Twenty CRM with Docker |
+| [Overview](https://knuckles-team.github.io/twenty-mcp/overview/) | the dynamic facade architecture |
+| [Concepts](https://knuckles-team.github.io/twenty-mcp/concepts/) | concept registry (`CONCEPT:TWENTY-*`) |
 
 ---
 
