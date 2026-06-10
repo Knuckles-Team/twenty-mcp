@@ -144,6 +144,50 @@ class CrmApi(ApiClientBase):
         """Delete an opportunity by ID."""
         return self.delete_record("opportunities", opportunity_id)
 
+    # --- Duplicate detection & ergonomic finders ---
+
+    def find_duplicates(
+        self,
+        object_name: str,
+        data: dict[str, Any] | None = None,
+        ids: list[str] | None = None,
+    ) -> dict:
+        """Find duplicate records for an object by data payload or record IDs."""
+        body: dict[str, Any]
+        if ids is not None:
+            body = {"ids": ids}
+        else:
+            body = {"data": data}
+        return self.request(
+            "POST", f"{self.api_prefix}/{object_name}/duplicates", data=body
+        )
+
+    def find_records(
+        self,
+        object_name: str,
+        filter: str | None = None,
+        order_by: str | None = None,
+        limit: int | None = None,
+        depth: int | None = None,
+        starting_after: str | None = None,
+        ending_before: str | None = None,
+    ) -> dict:
+        """Ergonomic record search wrapper mapping to Twenty REST query params."""
+        params: dict[str, Any] = {}
+        if filter is not None:
+            params["filter"] = filter
+        if order_by is not None:
+            params["order_by"] = order_by
+        if limit is not None:
+            params["limit"] = limit
+        if depth is not None:
+            params["depth"] = depth
+        if starting_after is not None:
+            params["starting_after"] = starting_after
+        if ending_before is not None:
+            params["ending_before"] = ending_before
+        return self.get_records(object_name, params=params)
+
     # --- GraphQL Core API ---
 
     def execute_gql(self, query: str, variables: dict[str, Any] | None = None) -> dict:

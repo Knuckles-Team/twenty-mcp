@@ -45,6 +45,15 @@ def get_mcp_instance() -> tuple[Any, ...]:
 
         register_oauth_tools(mcp)
 
+    DEFAULT_GRAPHQLTOOL = to_boolean(os.getenv("GRAPHQLTOOL", "True"))
+    if DEFAULT_GRAPHQLTOOL:
+        try:
+            from twenty_mcp.mcp.mcp_graphql import register_graphql_tools
+
+            register_graphql_tools(mcp)
+        except ImportError as e:
+            logger.warning(f"GraphQL tools unavailable (missing 'gql'?): {e}")
+
     for mw in middlewares:
         mcp.add_middleware(mw)
     return mcp, args, middlewares
