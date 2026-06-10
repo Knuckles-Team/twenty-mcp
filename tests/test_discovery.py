@@ -30,7 +30,7 @@ def test_discover_falls_back_to_metadata_api_when_introspection_disabled():
         "errors": [
             {
                 "message": (
-                    'GraphQL introspection has been disabled, but the requested '
+                    "GraphQL introspection has been disabled, but the requested "
                     'query contained the field "__schema".'
                 )
             }
