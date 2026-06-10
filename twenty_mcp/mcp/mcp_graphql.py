@@ -80,9 +80,10 @@ def register_graphql_tools(mcp: FastMCP):
         if ctx:
             await ctx.info("Retrieving Twenty metadata (meta-model)...")
 
-        # Safe wrapper to call execute_gql
+        # Safe wrapper to call execute_gql against Twenty's CORE schema, which
+        # lives at /metadata (the /graphql endpoint is object-CRUD only).
         def execute_fn(q, variables=None):
-            return client.execute_gql(query_str=q, variables=variables)
+            return client.execute_gql(query_str=q, variables=variables, core=True)
 
         # --- Path 1: standard GraphQL introspection (parity / if ever enabled) ---
         introspection_result: Any = None
@@ -127,6 +128,36 @@ def register_graphql_tools(mcp: FastMCP):
             return {"source": "metadata-api", "metadata": metadata}
         except Exception as e:
             return {"error": f"Failed to discover Twenty metadata: {str(e)}"}
+
+    @mcp.tool(tags={"graphql", "auth"})
+    async def twenty_provision_api_key(
+        email: str = Field(description="Twenty user email to authenticate as."),
+        password: str = Field(description="Twenty user password."),
+        name: str = Field(
+            default="egeria-harvester",
+            description="Human-readable name for the API key to create.",
+        ),
+        expires_at: str = Field(
+            default="2125-01-01T00:00:00.000Z",
+            description="ISO-8601 expiration timestamp for the key/token.",
+        ),
+        client=Depends(get_graphql_client),
+        ctx: Context | None = Field(
+            default=None, description="MCP context for progress reporting"
+        ),
+    ) -> dict:
+        """Programmatically provision a long-lived Twenty API key from user credentials (login->token->createApiKey->generateApiKeyToken on /metadata). Day-0 provisioning primitive."""
+        if ctx:
+            await ctx.info("Provisioning Twenty API key from credentials...")
+        try:
+            return client.provision_api_key(
+                email=email,
+                password=password,
+                name=name,
+                expires_at=expires_at,
+            )
+        except Exception as e:
+            return {"error": f"API key provisioning failed: {str(e)}"}
 
 
 def _introspection_disabled(result: Any) -> bool:
