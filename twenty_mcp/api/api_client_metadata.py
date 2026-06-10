@@ -46,6 +46,14 @@ class MetadataApi(ApiClientBase):
         """Delete a custom object schema."""
         return self.request_metadata("DELETE", f"objects/{object_id}")
 
+    def get_metadata_fields(self, params: dict[str, Any] | None = None) -> dict:
+        """Fetch all field schemas."""
+        return self.request_metadata("GET", "fields", params=params)
+
+    def get_metadata_field(self, field_id: str) -> dict:
+        """Fetch a specific field schema by ID."""
+        return self.request_metadata("GET", f"fields/{field_id}")
+
     def create_metadata_field(self, data: dict[str, Any]) -> dict:
         """Create a custom field on a standard or custom object."""
         return self.request_metadata("POST", "fields", data=data)
@@ -58,9 +66,21 @@ class MetadataApi(ApiClientBase):
         """Delete a custom field from an object schema."""
         return self.request_metadata("DELETE", f"fields/{field_id}")
 
+    def get_metadata_relations(self, params: dict[str, Any] | None = None) -> dict:
+        """Fetch all relation schemas."""
+        return self.request_metadata("GET", "relations", params=params)
+
+    def get_metadata_relation(self, relation_id: str) -> dict:
+        """Fetch a specific relation schema by ID."""
+        return self.request_metadata("GET", f"relations/{relation_id}")
+
     def create_metadata_relation(self, data: dict[str, Any]) -> dict:
         """Create a bidirectional relation between objects."""
         return self.request_metadata("POST", "relations", data=data)
+
+    def update_metadata_relation(self, relation_id: str, data: dict[str, Any]) -> dict:
+        """Update an existing relation by relation ID."""
+        return self.request_metadata("PATCH", f"relations/{relation_id}", data=data)
 
     def delete_metadata_relation(self, relation_id: str) -> dict:
         """Delete an existing relation by relation ID."""
