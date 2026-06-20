@@ -122,14 +122,21 @@ A local template is supplied inside [.env.example](.env.example). Copy this file
 
 ## MCP Tools
 
-The following declarative FastMCP tools are registered and available to upstream AI agents:
+_Auto-generated from the live MCP server — do not edit by hand._
 
-| Tool Name | Description | Parameters |
-|-----------|-------------|------------|
-| `get_people` | Retrieve list of people in CRM | `limit: int = 50` |
-| `create_person` | Create a new person in CRM | `first_name: str, last_name: str, email: str` |
-| `get_companies` | Retrieve list of companies in CRM | `limit: int = 50` |
-| `execute_gql` | Execute raw arbitrary GraphQL query | `query: str, variables: dict = None` |
+<!-- MCP-TOOLS-TABLE:START -->
+
+| MCP Tool | Toggle Env Var | Description |
+|----------|----------------|-------------|
+| `twenty_discover_graphql_schema` | `GRAPHQLTOOL` | Discover Twenty's underlying object/field/relation metadata (meta-model). |
+| `twenty_graphql` | `GRAPHQLTOOL` | Execute raw GraphQL queries and mutations natively on Twenty. |
+| `twenty_mcp_crm` | `CRMTOOL` | Manage Twenty MCP crm operations. |
+| `twenty_mcp_metadata` | `METADATATOOL` | Manage Twenty MCP metadata schema operations. |
+| `twenty_mcp_oauth` | `OAUTHTOOL` | Manage Twenty MCP OAuth and Webhooks operations. |
+| `twenty_provision_api_key` | `AUTHTOOL` | Programmatically provision a long-lived Twenty API key from user credentials (login->token->createApiKey->generateApiKeyToken on /metadata). Day-0 provisioning primitive. |
+
+_6 action-routed tools (default `MCP_TOOL_MODE=condensed`). Each is enabled unless its toggle is set false; set `MCP_TOOL_MODE=verbose` (or `both`) for the 1:1 per-operation surface. Auto-generated — do not edit._
+<!-- MCP-TOOLS-TABLE:END -->
 
 See [docs/overview.md](docs/overview.md) or [docs/concepts.md](docs/concepts.md) for deeper operational examples.
 
