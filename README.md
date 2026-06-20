@@ -133,7 +133,7 @@ _Auto-generated from the live MCP server — do not edit by hand._
 | `twenty_mcp_crm` | `CRMTOOL` | Manage Twenty MCP crm operations. |
 | `twenty_mcp_metadata` | `METADATATOOL` | Manage Twenty MCP metadata schema operations. |
 | `twenty_mcp_oauth` | `OAUTHTOOL` | Manage Twenty MCP OAuth and Webhooks operations. |
-| `twenty_provision_api_key` | `AUTHTOOL` | Programmatically provision a long-lived Twenty API key from user credentials (login->token->createApiKey->generateApiKeyToken on /metadata). Day-0 provisioning primitive. |
+| `twenty_provision_api_key` | `GRAPHQLTOOL` | Programmatically provision a long-lived Twenty API key from user credentials (login->token->createApiKey->generateApiKeyToken on /metadata). Day-0 provisioning primitive. |
 
 _6 action-routed tools (default `MCP_TOOL_MODE=condensed`). Each is enabled unless its toggle is set false; set `MCP_TOOL_MODE=verbose` (or `both`) for the 1:1 per-operation surface. Auto-generated — do not edit._
 <!-- MCP-TOOLS-TABLE:END -->
