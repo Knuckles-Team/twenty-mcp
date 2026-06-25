@@ -304,3 +304,53 @@ to just this package. Ask your agent to **"deploy `twenty-mcp` with agent-os-gen
 Secrets are read-existing + seeded via `vault_sync` — you are only prompted for what's missing.
 
 <!-- END agent-os-genesis-deploy -->
+
+## Environment Variables
+
+<!-- ENV-VARS-TABLE:START -->
+
+#### Package environment variables
+
+| Variable | Example | Description |
+|----------|---------|-------------|
+| `TWENTY_URL` | `http://localhost:3000` | Twenty CRM Base Server URL |
+| `TWENTY_TOKEN` | `twenty_developer_access_token` | Developer authentication token |
+| `TWENTY_MCP_BASE_URL` | `http://localhost:3000/api` | Base API URL to query |
+| `TWENTY_MCP_USERNAME` | `admin` | Auth username for service |
+| `TWENTY_MCP_PASSWORD` | `secure_password` | Auth password for service |
+| `TWENTY_MCP_SSL_VERIFY` | `True` | SSL verification flag |
+| `CRMTOOL` | `True` | CRM Tool Enabled Flag |
+| `METADATATOOL` | `True` | Metadata Tool Enabled Flag |
+| `OAUTHTOOL` | `True` | OAuth Tool Enabled Flag |
+| `GRAPHQLTOOL` | `True` | GraphQL Tool Enabled Flag |
+| `TWENTY_API_PREFIX` | `http://localhost:3000/api/v1` | Twenty API custom path prefix (if needed) |
+
+#### Inherited agent-utilities variables (apply to every connector)
+
+| Variable | Example | Description |
+|----------|---------|-------------|
+| `TRANSPORT` | `stdio` | MCP transport: `stdio` | `streamable-http` | `sse` |
+| `HOST` | `0.0.0.0` | Bind host (HTTP transports) |
+| `PORT` | `8000` | Bind port (HTTP transports) |
+| `MCP_TOOL_MODE` | `condensed` | Tool surface: `condensed` | `verbose` | `both` |
+| `MCP_ENABLED_TOOLS` | — | Comma-separated tool allow-list |
+| `MCP_DISABLED_TOOLS` | — | Comma-separated tool deny-list |
+| `MCP_ENABLED_TAGS` | — | Comma-separated tag allow-list |
+| `MCP_DISABLED_TAGS` | — | Comma-separated tag deny-list |
+| `EUNOMIA_TYPE` | `none` | Authorization mode: `none` | `embedded` | `remote` |
+| `EUNOMIA_POLICY_FILE` | `mcp_policies.json` | Embedded Eunomia policy file |
+| `EUNOMIA_REMOTE_URL` | — | Remote Eunomia authorization server URL |
+| `ENABLE_OTEL` | `False` | Enable OpenTelemetry export |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | — | OTLP collector endpoint |
+| `MCP_CLIENT_AUTH` | — | Outbound MCP auth (`oidc-client-credentials` for fleet calls) |
+| `OIDC_CLIENT_ID` | — | OIDC client id (service-account auth) |
+| `OIDC_CLIENT_SECRET` | — | OIDC client secret (service-account auth) |
+| `DEBUG` | `False` | Verbose logging |
+| `PYTHONUNBUFFERED` | `1` | Unbuffered stdout (recommended in containers) |
+| `MCP_URL` | `http://localhost:8000/mcp` | URL of the MCP server the agent connects to |
+| `PROVIDER` | `openai` | LLM provider for the agent |
+| `MODEL_ID` | `gpt-4o` | Model id for the agent |
+| `ENABLE_WEB_UI` | `True` | Serve the AG-UI web interface |
+
+_11 package + 22 inherited variable(s). Auto-generated from `.env.example` + the shared agent-utilities set — do not edit._
+<!-- ENV-VARS-TABLE:END -->
