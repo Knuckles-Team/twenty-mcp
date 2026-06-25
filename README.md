@@ -63,17 +63,54 @@ When query strings or parameters are supplied, an LLM-free **Knowledge Graph res
 
 ## Installation
 
-Install in editable mode directly inside your active workspace:
+> **Install the slim `[mcp]` extra.** The `twenty-mcp[mcp]` extra pulls only the FastMCP /
+> FastAPI tooling (`agent-utilities[mcp]`). It deliberately **excludes** the heavy agent
+> runtime (the epistemic-graph engine, `pydantic-ai`, `dspy`, `llama-index`, `tree-sitter`),
+> so `uvx`/container installs are dramatically smaller and faster. Use the full `[agent]`
+> extra only when you need the integrated Pydantic AI agent.
+
+Pick the extra that matches what you want to run:
+
+| Extra | Installs | Use when |
+|-------|----------|----------|
+| `twenty-mcp[mcp]` | Slim MCP server only (`agent-utilities[mcp]` — FastMCP/FastAPI) | You only run the **MCP server** (smallest install / image) |
+| `twenty-mcp[agent]` | Full agent runtime (`agent-utilities[agent,logfire]` — Pydantic AI + the epistemic-graph engine) | You run the **integrated agent** |
+| `twenty-mcp[all]` | Everything (`mcp` + `agent` + `logfire` + `gql`) | Development / both surfaces |
 
 ```bash
-pip install -e .[all]
+# MCP server only (recommended for tool hosting — slim deps)
+uv pip install "twenty-mcp[mcp]"
+
+# Full agent runtime (Pydantic AI + epistemic-graph engine)
+uv pip install "twenty-mcp[agent]"
+
+# Everything (development)
+uv pip install "twenty-mcp[all]"      # or: python -m pip install "twenty-mcp[all]"
 ```
 
-Or via the `uv` tool:
+### Container images (`:mcp` vs `:agent`)
+
+One multi-stage `docker/Dockerfile` builds two right-sized images, selected by `--target`:
+
+| Image tag | Build target | Contents | Entrypoint |
+|-----------|--------------|----------|------------|
+| `knucklessg1/twenty-mcp:mcp` | `--target mcp` | `twenty-mcp[mcp]` — **slim**, no engine/`pydantic-ai`/`dspy`/`llama-index`/`tree-sitter` | `twenty-mcp` |
+| `knucklessg1/twenty-mcp:latest` | `--target agent` (default) | `twenty-mcp[agent]` — **full** agent runtime + epistemic-graph engine | `twenty-agent` |
 
 ```bash
-uv pip install -e .
+docker build --target mcp   -t knucklessg1/twenty-mcp:mcp    docker/   # slim MCP server
+docker build --target agent -t knucklessg1/twenty-mcp:latest docker/   # full agent
 ```
+
+### Knowledge-graph database (`epistemic-graph`)
+
+The **full agent** (`[agent]` / `:latest`) embeds the **epistemic-graph** engine (pulled in
+transitively via `agent-utilities[agent]`). For production — or to share one knowledge graph
+across multiple agents — run **epistemic-graph as its own database container** and point the
+agent at it instead of embedding it. Deployment recipes (single-node + Raft HA), connection
+config, and the full database architecture (with diagrams) are documented in the
+[epistemic-graph deployment guide](https://knuckles-team.github.io/epistemic-graph/deployment/).
+The slim `[mcp]` server does **not** require the database.
 
 ---
 
@@ -104,19 +141,42 @@ python -m twenty_mcp.mcp_server
 
 ## Configuration
 
-The package is fully configurable via the environment variables listed below:
+The package is fully configurable via the environment variables listed below. A local
+template is supplied inside [.env.example](.env.example) — copy it to `.env` and fill in
+your service endpoint parameters before starting execution.
 
-| Variable | Description | Default | Required |
-|----------|-------------|---------|----------|
-| `TWENTY_URL` | Twenty CRM Base Server URL | `http://localhost:3000` | Yes |
-| `TWENTY_TOKEN` | Developer authentication token | `twenty_developer_access_token` | Yes |
-| `TWENTY_MCP_BASE_URL` | Base API URL to query | `http://localhost:3000/api` | Yes |
-| `TWENTY_MCP_USERNAME` | Auth username for service | `admin` | Yes |
-| `TWENTY_MCP_PASSWORD` | Auth password for service | `secure_password` | Yes |
-| `TWENTY_MCP_SSL_VERIFY` | SSL verification flag | `True` | Yes |
-| `CRMTOOL` | CRM Tool Enabled Flag | `True` | Yes |
+### Connection & credentials
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `TWENTY_URL` | Twenty CRM Base Server URL | `http://localhost:3000` |
+| `TWENTY_TOKEN` | Developer authentication token | — |
+| `TWENTY_MCP_BASE_URL` | Base API URL to query | `http://localhost:3000/api` |
+| `TWENTY_API_PREFIX` | Twenty API custom path prefix | `http://localhost:3000/api/v1` |
+| `TWENTY_MCP_USERNAME` | Auth username for service | `admin` |
+| `TWENTY_MCP_PASSWORD` | Auth password for service | — |
+| `TWENTY_MCP_SSL_VERIFY` | TLS verification flag | `True` |
 
-A local template is supplied inside [.env.example](.env.example). Copy this file as `.env` and fill out your specific service endpoint parameters before starting execution.
+### MCP server / transport
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `TRANSPORT` | `stdio`, `streamable-http`, or `sse` | `stdio` |
+| `HOST` | Bind host (HTTP transports) | `0.0.0.0` |
+| `PORT` | Bind port (HTTP transports) | `8000` |
+| `MCP_TOOL_MODE` | Tool surface: `condensed`, `verbose`, or `both` | `condensed` |
+| `MCP_ENABLED_TOOLS` / `MCP_DISABLED_TOOLS` | Comma-separated tool allow/deny list | — |
+| `MCP_ENABLED_TAGS` / `MCP_DISABLED_TAGS` | Comma-separated tag allow/deny list | — |
+
+### Tool toggles
+Each action-routed tool can be disabled individually via its toggle env var (set to `false`).
+The full list is in the [MCP Tools](#mcp-tools) table below
+(`CRMTOOL`, `METADATATOOL`, `OAUTHTOOL`, `GRAPHQLTOOL`).
+
+### Agent runtime (full `[agent]` runtime only)
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `MCP_URL` | URL of the MCP server the agent connects to | `http://localhost:8000/mcp` |
+| `PROVIDER` | LLM provider (e.g. `openai`) | `openai` |
+| `MODEL_ID` | Model id (e.g. `gpt-4o`) | `gpt-4o` |
 
 ---
 
