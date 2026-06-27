@@ -186,6 +186,8 @@ _Auto-generated from the live MCP server — do not edit by hand._
 
 <!-- MCP-TOOLS-TABLE:START -->
 
+#### Condensed action-routed tools (default — `MCP_TOOL_MODE=condensed`)
+
 | MCP Tool | Toggle Env Var | Description |
 |----------|----------------|-------------|
 | `twenty_discover_graphql_schema` | `GRAPHQLTOOL` | Discover Twenty's underlying object/field/relation metadata (meta-model). |
@@ -195,7 +197,66 @@ _Auto-generated from the live MCP server — do not edit by hand._
 | `twenty_mcp_oauth` | `OAUTHTOOL` | Manage Twenty MCP OAuth and Webhooks operations. |
 | `twenty_provision_api_key` | `GRAPHQLTOOL` | Programmatically provision a long-lived Twenty API key from user credentials (login->token->createApiKey->generateApiKeyToken on /metadata). Day-0 provisioning primitive. |
 
-_6 action-routed tools (default `MCP_TOOL_MODE=condensed`). Each is enabled unless its toggle is set false; set `MCP_TOOL_MODE=verbose` (or `both`) for the 1:1 per-operation surface. Auto-generated — do not edit._
+#### Verbose 1:1 API-mapped tools (`MCP_TOOL_MODE=verbose` or `both`)
+
+<details>
+<summary>49 per-operation tools — one per public API method (click to expand)</summary>
+
+| MCP Tool | Toggle Env Var | Description |
+|----------|----------------|-------------|
+| `twenty_batch_create_records` | `CRM_APITOOL` | Batch create up to 60 records for any object. |
+| `twenty_batch_delete_records` | `CRM_APITOOL` | Batch delete up to 60 records by ID for any object. |
+| `twenty_batch_update_records` | `CRM_APITOOL` | Batch update up to 60 records for any object. |
+| `twenty_client_credentials_oauth_token` | `OAUTH_APITOOL` | Perform a server-to-server client credentials flow to get a workspace-scoped token. |
+| `twenty_create_company` | `CRM_APITOOL` | Create a company in CRM. |
+| `twenty_create_metadata_field` | `METADATA_APITOOL` | Create a custom field on a standard or custom object. |
+| `twenty_create_metadata_object` | `METADATA_APITOOL` | Create a new custom object schema (e.g. Invoice). |
+| `twenty_create_metadata_relation` | `METADATA_APITOOL` | Create a bidirectional relation between objects. |
+| `twenty_create_opportunity` | `CRM_APITOOL` | Create opportunity. |
+| `twenty_create_person` | `CRM_APITOOL` | Create a person in CRM. |
+| `twenty_create_record` | `CRM_APITOOL` | Create a new record for any custom or built-in object. |
+| `twenty_delete_company` | `CRM_APITOOL` | Delete a company by ID. |
+| `twenty_delete_metadata_field` | `METADATA_APITOOL` | Delete a custom field from an object schema. |
+| `twenty_delete_metadata_object` | `METADATA_APITOOL` | Delete a custom object schema. |
+| `twenty_delete_metadata_relation` | `METADATA_APITOOL` | Delete an existing relation by relation ID. |
+| `twenty_delete_opportunity` | `CRM_APITOOL` | Delete an opportunity by ID. |
+| `twenty_delete_person` | `CRM_APITOOL` | Delete a contact by ID. |
+| `twenty_delete_record` | `CRM_APITOOL` | Delete a record by ID for any custom or built-in object. |
+| `twenty_exchange_oauth_token` | `OAUTH_APITOOL` | Exchange an authorization code for access and refresh tokens. |
+| `twenty_execute_gql` | `CRM_APITOOL` | Execute arbitrary GraphQL queries on core and custom schemas. |
+| `twenty_find_duplicates` | `CRM_APITOOL` | Find duplicate records for an object by data payload or record IDs. |
+| `twenty_find_records` | `CRM_APITOOL` | Ergonomic record search wrapper mapping to Twenty REST query params. |
+| `twenty_get_companies` | `CRM_APITOOL` | Get CRM companies. |
+| `twenty_get_company` | `CRM_APITOOL` | Get a specific company by ID. |
+| `twenty_get_metadata` | `METADATA_APITOOL` | Fetch complete workspace metadata schema. |
+| `twenty_get_metadata_field` | `METADATA_APITOOL` | Fetch a specific field schema by ID. |
+| `twenty_get_metadata_fields` | `METADATA_APITOOL` | Fetch all field schemas. |
+| `twenty_get_metadata_object` | `METADATA_APITOOL` | Fetch a specific object schema by name or ID. |
+| `twenty_get_metadata_objects` | `METADATA_APITOOL` | Fetch all object schemas. |
+| `twenty_get_metadata_relation` | `METADATA_APITOOL` | Fetch a specific relation schema by ID. |
+| `twenty_get_metadata_relations` | `METADATA_APITOOL` | Fetch all relation schemas. |
+| `twenty_get_oauth_discovery` | `OAUTH_APITOOL` | Fetch the standard OAuth configuration server discovery metadata. |
+| `twenty_get_opportunities` | `CRM_APITOOL` | Get opportunities. |
+| `twenty_get_opportunity` | `CRM_APITOOL` | Get a specific opportunity by ID. |
+| `twenty_get_people` | `CRM_APITOOL` | Get CRM contacts. |
+| `twenty_get_person` | `CRM_APITOOL` | Get a specific contact by ID. |
+| `twenty_get_record` | `CRM_APITOOL` | Fetch a specific record by ID for any custom or built-in object. |
+| `twenty_get_records` | `CRM_APITOOL` | Fetch a list of records for any custom or built-in object. |
+| `twenty_refresh_oauth_token` | `OAUTH_APITOOL` | Refresh an expired access token using a refresh token. |
+| `twenty_register_oauth_client` | `OAUTH_APITOOL` | Register a new OAuth client dynamically per RFC 7591. |
+| `twenty_request_metadata` | `METADATA_APITOOL` | Internal helper for Routing Metadata requests under /rest/metadata or /metadata. |
+| `twenty_update_company` | `CRM_APITOOL` | Update a company's fields by ID. |
+| `twenty_update_metadata_field` | `METADATA_APITOOL` | Update an existing field's metadata configuration. |
+| `twenty_update_metadata_object` | `METADATA_APITOOL` | Update a custom object schema. |
+| `twenty_update_metadata_relation` | `METADATA_APITOOL` | Update an existing relation by relation ID. |
+| `twenty_update_opportunity` | `CRM_APITOOL` | Update an opportunity's fields by ID. |
+| `twenty_update_person` | `CRM_APITOOL` | Update a contact's fields. |
+| `twenty_update_record` | `CRM_APITOOL` | Update an existing record by ID for any custom or built-in object. |
+| `twenty_validate_webhook_signature` | `OAUTH_APITOOL` | Validate an incoming webhook signature using HMAC SHA256 (timing safe). |
+
+</details>
+
+_6 action-routed tool(s) (default) · 49 verbose 1:1 tool(s). Each is enabled unless its `<DOMAIN>TOOL` toggle is set false; `MCP_TOOL_MODE` selects the surface (`condensed` default · `verbose` 1:1 · `both`). Auto-generated — do not edit._
 <!-- MCP-TOOLS-TABLE:END -->
 
 See [docs/overview.md](docs/overview.md) or [docs/concepts.md](docs/concepts.md) for deeper operational examples.
