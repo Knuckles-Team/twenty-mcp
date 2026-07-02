@@ -1,7 +1,7 @@
 # Twenty MCP
 
 [![Status](https://img.shields.io/badge/status-active-success)](https://github.com/genius-agents/twenty-mcp)
-[![Version](https://img.shields.io/badge/version-1.0.0-blue)](pyproject.toml)
+[![Version](https://img.shields.io/badge/version-1.0.1-blue)](pyproject.toml)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 > **Documentation** — Installation, deployment, usage across the MCP, API, and agent
