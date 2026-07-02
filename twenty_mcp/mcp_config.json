@@ -7,7 +7,17 @@
         "twenty_mcp.mcp_server"
       ],
       "env": {
-        "MCP_TOOL_MODE": "condensed"
+        "MCP_TOOL_MODE": "condensed",
+        "CRMTOOL": "True",
+        "GRAPHQLTOOL": "True",
+        "METADATATOOL": "True",
+        "OAUTHTOOL": "True",
+        "TWENTY_API_PREFIX": "http://localhost:3000/api/v1",
+        "TWENTY_MCP_BASE_URL": "http://localhost:3000/api",
+        "TWENTY_MCP_PASSWORD": "secure_password",
+        "TWENTY_MCP_USERNAME": "admin",
+        "TWENTY_TOKEN": "twenty_developer_access_token",
+        "TWENTY_URL": "http://localhost:3000"
       }
     }
   }
