@@ -1,0 +1,142 @@
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix dc: <http://purl.org/dc/terms/> .
+@prefix : <http://knuckles.team/kg#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Twenty CRM ontology — the customer-relationship model of a Twenty workspace:
+# people (contacts), companies (accounts), and the opportunities (deals) that link
+# them, plus the notes/tasks recorded against them. All classes and properties live
+# in the shared `:` (kg#) namespace; only the owl:Ontology node gets the per-package
+# IRI. `:Person` is REUSED from the hub (never redefined here). Backs the twenty-mcp
+# tool surface (twenty_mcp_crm get_people / get_companies / get_opportunities /
+# execute_gql / …).
+
+# --- classes (owl:Class) ---
+
+:Company a owl:Class ;
+    rdfs:label "Company" ;
+    rdfs:comment "A CRM company / account record in Twenty (twenty_mcp_crm get_companies)." .
+
+:Opportunity a owl:Class ;
+    rdfs:label "Opportunity" ;
+    rdfs:comment "A sales opportunity / deal moving through pipeline stages (twenty_mcp_crm get_opportunities)." .
+
+:CrmNote a owl:Class ;
+    rdfs:label "CRM Note" ;
+    rdfs:comment "A free-text note attached to a person, company, or opportunity in Twenty." .
+
+:CrmTask a owl:Class ;
+    rdfs:label "CRM Task" ;
+    rdfs:comment "An actionable to-do tracked against a CRM record in Twenty." .
+
+:PipelineStage a owl:Class ;
+    rdfs:label "Pipeline Stage" ;
+    rdfs:comment "A named stage in the opportunity sales pipeline (e.g. NEW, SCREENING, MEETING, PROPOSAL, CUSTOMER)." .
+
+# NOTE: :Person is provided by the hub base ontology and REUSED for Twenty contacts —
+# it is deliberately NOT redefined here.
+
+# --- links (owl:ObjectProperty) ---
+
+:worksAt a owl:ObjectProperty ;
+    rdfs:label "works at" ;
+    rdfs:comment "Links a Person (contact) to the Company they are associated with." ;
+    rdfs:domain :Person ;
+    rdfs:range :Company .
+
+:opportunityFor a owl:ObjectProperty ;
+    rdfs:label "opportunity for" ;
+    rdfs:comment "Links an Opportunity to the Company (account) it targets." ;
+    rdfs:domain :Opportunity ;
+    rdfs:range :Company .
+
+:pointOfContact a owl:ObjectProperty ;
+    rdfs:label "point of contact" ;
+    rdfs:comment "Links an Opportunity to the Person who is its primary contact." ;
+    rdfs:domain :Opportunity ;
+    rdfs:range :Person .
+
+:atStage a owl:ObjectProperty ;
+    rdfs:label "at stage" ;
+    rdfs:comment "Links an Opportunity to its current PipelineStage." ;
+    rdfs:domain :Opportunity ;
+    rdfs:range :PipelineStage .
+
+:noteOn a owl:ObjectProperty ;
+    rdfs:label "note on" ;
+    rdfs:comment "Links a CrmNote to the Person, Company, or Opportunity it annotates." .
+
+:taskOn a owl:ObjectProperty ;
+    rdfs:label "task on" ;
+    rdfs:comment "Links a CrmTask to the Person, Company, or Opportunity it concerns." .
+
+:assignedTo a owl:ObjectProperty ;
+    rdfs:label "assigned to" ;
+    rdfs:comment "Links a CrmTask or Opportunity to the Person (workspace member) who owns it." ;
+    rdfs:range :Person .
+
+# --- fields (owl:DatatypeProperty) ---
+
+:domainName a owl:DatatypeProperty ;
+    rdfs:label "domain name" ;
+    rdfs:comment "Primary web domain of a Company (e.g. acme.com)." ;
+    rdfs:domain :Company ;
+    rdfs:range xsd:string .
+
+:employees a owl:DatatypeProperty ;
+    rdfs:label "employees" ;
+    rdfs:comment "Head-count of a Company as recorded in Twenty." ;
+    rdfs:domain :Company ;
+    rdfs:range xsd:integer .
+
+:jobTitle a owl:DatatypeProperty ;
+    rdfs:label "job title" ;
+    rdfs:comment "The job title of a Person (contact)." ;
+    rdfs:domain :Person ;
+    rdfs:range xsd:string .
+
+:primaryEmail a owl:DatatypeProperty ;
+    rdfs:label "primary email" ;
+    rdfs:comment "Primary email address of a Person (contact)." ;
+    rdfs:domain :Person ;
+    rdfs:range xsd:string .
+
+:amount a owl:DatatypeProperty ;
+    rdfs:label "amount" ;
+    rdfs:comment "Monetary value of an Opportunity (major currency units)." ;
+    rdfs:domain :Opportunity ;
+    rdfs:range xsd:decimal .
+
+:currencyCode a owl:DatatypeProperty ;
+    rdfs:label "currency code" ;
+    rdfs:comment "ISO currency code of an Opportunity amount (e.g. USD)." ;
+    rdfs:domain :Opportunity ;
+    rdfs:range xsd:string .
+
+:stage a owl:DatatypeProperty ;
+    rdfs:label "stage" ;
+    rdfs:comment "Current pipeline stage label of an Opportunity (denormalized string form of :atStage)." ;
+    rdfs:domain :Opportunity ;
+    rdfs:range xsd:string .
+
+:closeDate a owl:DatatypeProperty ;
+    rdfs:label "close date" ;
+    rdfs:comment "Expected or actual close date of an Opportunity (ISO-8601)." ;
+    rdfs:domain :Opportunity ;
+    rdfs:range xsd:dateTime .
+
+:externalToolId a owl:DatatypeProperty ;
+    rdfs:label "external tool id" ;
+    rdfs:comment "Native Twenty record UUID of the object (used to derive the KG node id)." ;
+    rdfs:range xsd:string .
+
+<http://knuckles.team/kg/twenty> a owl:Ontology ;
+    rdfs:label "Twenty CRM Ontology" ;
+    rdfs:comment """Twenty customer-relationship model — people (contacts), companies
+    (accounts), and the opportunities/deals that link them, with their pipeline stages,
+    notes and tasks — federated into the agent-utilities knowledge-graph hub. Reuses the
+    shared :Person class for contacts.""" ;
+    owl:imports <http://knuckles.team/kg/enterprise> .

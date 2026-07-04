@@ -31,6 +31,12 @@ twenty-agent = "twenty_mcp.agent_server:agent_server"
 [project.entry-points."agent_utilities.skill_providers"]
 twenty-mcp = "twenty_mcp.skills"
 
+[project.entry-points."agent_utilities.ontology_providers"]
+twenty-mcp = "twenty_mcp.ontology"
+
+[project.entry-points."agent_utilities.source_connector_providers"]
+twenty-mcp = "twenty_mcp.connectors"
+
 [project.entry-points."agent_utilities.prompt_providers"]
 twenty-mcp = "twenty_mcp.prompts"
 
@@ -50,7 +56,7 @@ check_untyped_defs = true
 dev = [ "pytest-timeout>=2.4.0",]
 
 [tool.setuptools.package-data]
-twenty_mcp = [ "mcp_config.json", "prompts/**", "skills/**",]
+twenty_mcp = [ "mcp_config.json", "prompts/**", "skills/**", "ontology/**", "connectors/**",]
 
 [tool.ruff.lint]
 select = [ "E", "F", "I", "UP", "B",]

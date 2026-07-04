@@ -1,0 +1,36 @@
+{
+  "_comment": "Tier-1 mcp_tool source presets for twenty-mcp (AU-KG.ingest.mcp-tool-connector). Sync Twenty CRM people/companies/opportunities into the KG via the twenty-mcp MCP server. Contributed presets win over the central MCP_TOOL_PRESETS.",
+  "twenty-people": {
+    "server": "twenty-mcp",
+    "tool": "twenty_mcp_crm",
+    "action": "get_people",
+    "records_path": "data.people",
+    "id_field": "id",
+    "title_field": "name.firstName",
+    "text_field": "jobTitle",
+    "updated_field": "updatedAt",
+    "doc_type": "crm-contact"
+  },
+  "twenty-companies": {
+    "server": "twenty-mcp",
+    "tool": "twenty_mcp_crm",
+    "action": "get_companies",
+    "records_path": "data.companies",
+    "id_field": "id",
+    "title_field": "name",
+    "text_field": "domainName.primaryLinkUrl",
+    "updated_field": "updatedAt",
+    "doc_type": "crm-company"
+  },
+  "twenty-opportunities": {
+    "server": "twenty-mcp",
+    "tool": "twenty_mcp_crm",
+    "action": "get_opportunities",
+    "records_path": "data.opportunities",
+    "id_field": "id",
+    "title_field": "name",
+    "text_field": "stage",
+    "updated_field": "updatedAt",
+    "doc_type": "crm-opportunity"
+  }
+}
