@@ -1,4 +1,4 @@
-"""CONCEPT:TWENTY-003 Identity credentials loader and session manager."""
+"""CONCEPT:TW-OS.identity.twenty Identity credentials loader and session manager."""
 
 from typing import Any
 

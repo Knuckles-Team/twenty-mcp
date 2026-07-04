@@ -9,7 +9,7 @@ from twenty_mcp.auth import get_client
 
 def register_crm_tools(mcp: FastMCP):
     """Register Twenty MCP crm tools.
-    CONCEPT:TWENTY-001
+    CONCEPT:TW-OS.governance.twenty
     """
 
     @mcp.tool(tags={"crm"})

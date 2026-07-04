@@ -1,12 +1,12 @@
 # Concept Registry — Twenty MCP
 
 > **Prefix**: `CONCEPT:TWENTY-*`
-> **Bridge**: `CONCEPT:ECO-4.0` (Unified Toolkit Ingestion)
+> **Bridge**: `CONCEPT:AU-ECO.messaging.native-backend-abstraction` (Unified Toolkit Ingestion)
 
 ## Project-Specific Concepts
 
 | Concept ID | Name | Description |
 |------------|------|-------------|
-| `CONCEPT:TWENTY-001` | Core API Client Operations | Exposes core client capability facade |
-| `CONCEPT:TWENTY-002` | FastMCP Tools Execution | Exposes FastMCP tool interface capabilities |
-| `CONCEPT:TWENTY-003` | Identity & Gateway Security | Exposes authentication, authorization, and secure transport operations |
+| `CONCEPT:TW-OS.governance.twenty` | Core API Client Operations | Exposes core client capability facade |
+| `CONCEPT:TW-OS.governance.twenty-2` | FastMCP Tools Execution | Exposes FastMCP tool interface capabilities |
+| `CONCEPT:TW-OS.identity.twenty` | Identity & Gateway Security | Exposes authentication, authorization, and secure transport operations |

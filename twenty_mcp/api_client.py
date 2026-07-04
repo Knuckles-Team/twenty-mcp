@@ -1,4 +1,4 @@
-"""CONCEPT:TWENTY-001 Dynamic client facade orchestration and resource mappings."""
+"""CONCEPT:TW-OS.governance.twenty Dynamic client facade orchestration and resource mappings."""
 
 #!/usr/bin/env python
 from twenty_mcp.api.api_client_crm import CrmApi

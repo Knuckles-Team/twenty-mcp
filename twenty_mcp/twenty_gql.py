@@ -1,5 +1,5 @@
 #!/usr/bin/python
-"""CONCEPT:TWENTY-004 Standardized GraphQL client for the Twenty CRM API.
+"""CONCEPT:TW-OS.config.twenty Standardized GraphQL client for the Twenty CRM API.
 
 Mirrors the ``gitlab-api`` GraphQL pattern (``gql`` library +
 ``RequestsHTTPTransport`` + ``execute_gql``) while accounting for Twenty's

@@ -1,9 +1,9 @@
 import pytest
 
 
-@pytest.mark.concept("TWENTY-002")
+@pytest.mark.concept("TW-OS.governance.twenty-2")
 def test_mcp_server_registration():
-    """CONCEPT:TWENTY-002 Test that tools register successfully."""
+    """CONCEPT:TW-OS.governance.twenty-2 Test that tools register successfully."""
     from twenty_mcp.mcp_server import get_mcp_instance
 
     res = get_mcp_instance()
@@ -17,9 +17,9 @@ def test_mcp_server_registration():
     assert len(mcp._local_provider._components) > 0
 
 
-@pytest.mark.concept("TWENTY-003")
+@pytest.mark.concept("TW-OS.identity.twenty")
 def test_mcp_server_security_context():
-    """CONCEPT:TWENTY-003 Verify that the server registers with correct security credentials."""
+    """CONCEPT:TW-OS.identity.twenty Verify that the server registers with correct security credentials."""
     from twenty_mcp.auth import get_client
 
     client = get_client()

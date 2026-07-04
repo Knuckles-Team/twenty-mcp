@@ -1,6 +1,6 @@
 """MCP tools for graphql operations.
 
-CONCEPT:TWENTY-004 Standardized GraphQL tooling, mirroring gitlab-api.
+CONCEPT:TW-OS.config.twenty Standardized GraphQL tooling, mirroring gitlab-api.
 """
 
 from typing import Any
