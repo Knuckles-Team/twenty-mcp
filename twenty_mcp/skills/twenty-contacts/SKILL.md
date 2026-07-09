@@ -1,5 +1,6 @@
 ---
 name: twenty-contacts
+skill_type: skill
 description: >-
   Manage people (contacts) and companies (accounts) in Twenty CRM via the
   twenty-mcp MCP server — list, search, read, create, and update person and

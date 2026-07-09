@@ -1,5 +1,6 @@
 ---
 name: twenty-kg-sync
+skill_type: skill
 description: >-
   Natively ingest Twenty CRM records into the epistemic-graph knowledge graph via
   the twenty-mcp MCP server's `twenty_ingest_records` tool — pushing people,

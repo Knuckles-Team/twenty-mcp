@@ -1,5 +1,6 @@
 ---
 name: twenty-pipeline
+skill_type: skill
 description: >-
   Drive the sales pipeline in Twenty CRM via the twenty-mcp MCP server — list,
   read, create, update, and advance opportunities (deals) with the domain-typed
