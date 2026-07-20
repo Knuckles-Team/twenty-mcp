@@ -20,7 +20,7 @@ Twenty publishes the `twentycrm/twenty` image. The following stack runs the serv
 # docker/twenty-platform.compose.yml
 services:
   twenty:
-    image: twentycrm/twenty:latest
+    image: twentycrm/twenty@sha256:<digest>
     container_name: twenty
     hostname: twenty
     restart: unless-stopped
@@ -73,7 +73,7 @@ Open `http://localhost:3000`, complete the first-run sign-up, then create a deve
 ```bash
 export TWENTY_URL=http://localhost:3000
 export TWENTY_TOKEN=your_developer_access_token
-export TWENTY_MCP_SSL_VERIFY=True
+export TWENTY_TLS_PROFILE=system
 
 twenty-mcp --transport streamable-http --host 0.0.0.0 --port 8000
 ```
@@ -87,7 +87,7 @@ server reaches the CRM by container name:
 # docker/stack.compose.yml
 services:
   twenty:
-    image: twentycrm/twenty:latest
+    image: twentycrm/twenty@sha256:<digest>
     hostname: twenty
     ports: ["3000:3000"]
     environment:
@@ -113,7 +113,7 @@ services:
     image: redis:7-alpine
 
   twenty-mcp:
-    image: knucklessg1/twenty-mcp:latest
+    image: example/twenty-mcp@sha256:<digest>
     depends_on: [twenty]
     environment:
       - TWENTY_URL=http://twenty:3000

@@ -7,7 +7,7 @@
         "twenty_mcp.mcp_server"
       ],
       "env": {
-        "MCP_TOOL_MODE": "condensed",
+        "MCP_TOOL_MODE": "intent",
         "CRMTOOL": "True",
         "GRAPHQLTOOL": "True",
         "METADATATOOL": "True",

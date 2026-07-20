@@ -1,21 +1,9 @@
-"""Native epistemic-graph ingestion for Twenty CRM records (typed graph nodes).
+"""Native epistemic-graph ingestion for Twenty CRM records.
 
-CONCEPT:AU-KG.ingest.enterprise-source-extractor. The package natively pushes its CRM
-data into the ONE epistemic-graph knowledge graph as **typed OWL nodes** (`:Person`,
-`:Company`, `:Opportunity`, …) + links, using the lightweight engine client
-(``GraphComputeEngine()._client`` + ``txn``) — the same fast client the blob
-``MediaStore`` uses, NOT the heavy in-process ingestion engine.
-
-Everything is dependency-/engine-guarded: with no agent-utilities KG stack or no
-reachable engine, every entry point **no-ops** (returns ``None``), so the connector
-keeps working with zero KG infrastructure. Nodes carry the shared provenance
-(``domain``/``source``) and their ``type`` matches the classes federated by
-``twenty_mcp.ontology`` (``twenty.ttl``). Node ids follow ``twenty:<class>:<uuid>``.
-
-This is a thin mapper: it prefers the shared ``agent_utilities.knowledge_graph.memory.
-native_ingest`` primitive when installed, and falls back to a self-contained txn write
-path (identical semantics) otherwise, since the primitive is not yet in the installed
-agent_utilities.
+All writes use the required ``agent_utilities.knowledge_graph.memory.native_ingest``
+primitive. Nodes use canonical ``node_type`` and edges use canonical ``relationship``;
+nodes and edges commit in one native transaction. Missing engine dependencies, rejected
+records, conflicts, and transaction failures propagate as ``NativeIngestError``.
 """
 
 from __future__ import annotations
@@ -23,31 +11,14 @@ from __future__ import annotations
 import logging
 from typing import Any
 
+from agent_utilities.knowledge_graph.memory.native_ingest import (
+    ingest_entities as _native_ingest_entities,
+)
+
 logger = logging.getLogger("twenty_mcp.kg")
 
 _SOURCE = "twenty-mcp"
 _DOMAIN = "twenty"
-_DEFAULT_GRAPH = "__commons__"
-
-
-def _client() -> tuple[Any | None, str]:
-    """Return ``(engine_client, graph_name)`` or ``(None, "")`` when unavailable."""
-    try:
-        from agent_utilities.knowledge_graph.core.graph_compute import (
-            GraphComputeEngine,
-        )
-    except Exception as e:  # noqa: BLE001 — KG stack absent
-        logger.debug("KG ingest unavailable (import): %s", e)
-        return None, ""
-    try:
-        engine = GraphComputeEngine()
-        client = getattr(engine, "_client", None)
-        if client is None:
-            return None, ""
-        return client, (getattr(engine, "graph_name", None) or _DEFAULT_GRAPH)
-    except Exception as e:  # noqa: BLE001 — engine unreachable
-        logger.debug("KG ingest: engine unreachable: %s", e)
-        return None, ""
 
 
 def ingest_entities(
@@ -58,70 +29,11 @@ def ingest_entities(
     domain: str = _DOMAIN,
     client: Any | None = None,
     graph: str | None = None,
-) -> dict[str, int] | None:
-    """Write typed nodes (+ edges) into epistemic-graph via the fast engine client.
-
-    ``entities``: ``[{"id":..., "type":<owl:Class>, ...props}]``.
-    ``relationships``: ``[{"source":id, "target":id, "type":rel}]``.
-    Returns ``{"nodes":n, "edges":m}`` or ``None`` (no engine / failure; never raises).
-    Prefers the shared ``native_ingest`` primitive; falls back to a local txn path.
-    ``client``/``graph`` may be injected (tests); otherwise resolved on demand.
-    """
-    entities = [e for e in (entities or []) if e.get("id")]
-    if not entities:
-        return None
-
-    # Preferred path: shared primitive (only when we are NOT given a test client).
-    if client is None:
-        try:
-            from agent_utilities.knowledge_graph.memory.native_ingest import (
-                ingest_entities as _shared_ingest,
-            )
-
-            return _shared_ingest(
-                entities,
-                relationships,
-                source=source,
-                domain=domain,
-                graph=graph,
-            )
-        except Exception as e:  # noqa: BLE001 — primitive absent; use local fallback
-            logger.debug("KG ingest: shared primitive unavailable: %s", e)
-
-    # Self-contained fallback (identical semantics to the shared primitive).
-    if client is None:
-        client, graph = _client()
-    if client is None:
-        return None
-    graph = graph or _DEFAULT_GRAPH
-
-    try:
-        txn = client.txn.begin(graph=graph)
-        for ent in entities:
-            props = {k: v for k, v in ent.items() if k != "id" and v is not None}
-            props.setdefault("source", source)
-            props.setdefault("domain", domain)
-            client.txn.add_node(txn, ent["id"], props)
-        committed = client.txn.commit(txn)
-    except Exception as e:  # noqa: BLE001 — engine/txn failure is non-fatal
-        logger.warning("KG ingest: txn failed: %s", e)
-        return None
-    if not committed:
-        logger.warning("KG ingest: txn not committed (conflict)")
-        return None
-
-    edges = 0
-    for rel in relationships or []:
-        try:
-            client.edges.add(
-                rel["source"], rel["target"], {"type": rel.get("type", "RELATED")}
-            )
-            edges += 1
-        except Exception as e:  # noqa: BLE001 — pure edge link, best-effort
-            logger.debug("KG ingest: edge skipped: %s", e)
-
-    logger.info("KG ingest: wrote %d nodes, %d edges", len(entities), edges)
-    return {"nodes": len(entities), "edges": edges}
+) -> dict[str, int]:
+    """Write canonical typed nodes and relationships in one native transaction."""
+    return _native_ingest_entities(
+        entities, relationships, source=source, domain=domain, client=client, graph=graph
+    )
 
 
 # --- record → node field extraction helpers ---------------------------------
@@ -183,7 +95,7 @@ def ingest_people(
     *,
     client: Any | None = None,
     graph: str | None = None,
-) -> dict[str, int] | None:
+) -> dict[str, int]:
     """Map Twenty people records → ``:Person`` (+ ``:Company`` / ``:worksAt``) nodes."""
     entities: list[dict[str, Any]] = []
     relationships: list[dict[str, Any]] = []
@@ -194,7 +106,7 @@ def ingest_people(
         entities.append(
             {
                 "id": f"twenty:person:{pid}",
-                "type": "Person",
+                "node_type": "Person",
                 "name": _full_name(rec),
                 "primaryEmail": _primary_email(rec),
                 "jobTitle": _s(rec.get("jobTitle")),
@@ -210,7 +122,7 @@ def ingest_people(
                 {
                     "source": f"twenty:person:{pid}",
                     "target": f"twenty:company:{cid}",
-                    "type": "worksAt",
+                    "relationship": "worksAt",
                 }
             )
     return ingest_entities(entities, relationships, client=client, graph=graph)
@@ -221,7 +133,7 @@ def ingest_companies(
     *,
     client: Any | None = None,
     graph: str | None = None,
-) -> dict[str, int] | None:
+) -> dict[str, int]:
     """Map Twenty company records → ``:Company`` nodes."""
     entities: list[dict[str, Any]] = []
     for rec in companies or []:
@@ -231,7 +143,7 @@ def ingest_companies(
         entities.append(
             {
                 "id": f"twenty:company:{cid}",
-                "type": "Company",
+                "node_type": "Company",
                 "name": _s(rec.get("name")),
                 "domainName": _domain_name(rec),
                 "employees": rec.get("employees"),
@@ -248,7 +160,7 @@ def ingest_opportunities(
     *,
     client: Any | None = None,
     graph: str | None = None,
-) -> dict[str, int] | None:
+) -> dict[str, int]:
     """Map Twenty opportunity records → ``:Opportunity`` (+ company / contact links)."""
     entities: list[dict[str, Any]] = []
     relationships: list[dict[str, Any]] = []
@@ -260,7 +172,7 @@ def ingest_opportunities(
         entities.append(
             {
                 "id": f"twenty:opportunity:{oid}",
-                "type": "Opportunity",
+                "node_type": "Opportunity",
                 "name": _s(rec.get("name")),
                 "amount": amount,
                 "currencyCode": currency,
@@ -277,7 +189,7 @@ def ingest_opportunities(
                 {
                     "source": f"twenty:opportunity:{oid}",
                     "target": f"twenty:company:{cid}",
-                    "type": "opportunityFor",
+                    "relationship": "opportunityFor",
                 }
             )
         poc = rec.get("pointOfContactId")
@@ -286,7 +198,7 @@ def ingest_opportunities(
                 {
                     "source": f"twenty:opportunity:{oid}",
                     "target": f"twenty:person:{poc}",
-                    "type": "pointOfContact",
+                    "relationship": "pointOfContact",
                 }
             )
     return ingest_entities(entities, relationships, client=client, graph=graph)

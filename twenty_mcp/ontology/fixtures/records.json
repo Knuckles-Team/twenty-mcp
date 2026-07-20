@@ -1,0 +1,55 @@
+{
+  "connector": "twenty-mcp",
+  "fixtures": [
+    {
+      "expected": {
+        "acl_state": "quarantine",
+        "id": "fixture-record",
+        "title": "Synthetic certification record"
+      },
+      "preset": "twenty-companies",
+      "record": {
+        "acl_public": false,
+        "domainName": {
+          "primaryLinkUrl": "Synthetic content used only for contract validation."
+        },
+        "id": "fixture-record",
+        "name": "Synthetic certification record",
+        "updatedAt": "2000-01-01T00:00:00Z"
+      }
+    },
+    {
+      "expected": {
+        "acl_state": "quarantine",
+        "id": "fixture-record",
+        "title": "Synthetic certification record"
+      },
+      "preset": "twenty-opportunities",
+      "record": {
+        "acl_public": false,
+        "id": "fixture-record",
+        "name": "Synthetic certification record",
+        "stage": "Synthetic content used only for contract validation.",
+        "updatedAt": "2000-01-01T00:00:00Z"
+      }
+    },
+    {
+      "expected": {
+        "acl_state": "quarantine",
+        "id": "fixture-record",
+        "title": "Synthetic certification record"
+      },
+      "preset": "twenty-people",
+      "record": {
+        "acl_public": false,
+        "id": "fixture-record",
+        "jobTitle": "Synthetic content used only for contract validation.",
+        "name": {
+          "firstName": "Synthetic certification record"
+        },
+        "updatedAt": "2000-01-01T00:00:00Z"
+      }
+    }
+  ],
+  "schema_version": "1"
+}

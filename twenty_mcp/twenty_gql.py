@@ -25,8 +25,27 @@ import logging
 from typing import Any
 
 from agent_utilities.core.exceptions import MissingParameterError, ParameterError
+from agent_utilities.core.transport_security import (
+    ResolvedTLSProfile,
+    resolve_configured_tls_profile,
+)
 from gql import Client, gql
 from gql.transport.requests import RequestsHTTPTransport
+
+
+class _ProfiledRequestsHTTPTransport(RequestsHTTPTransport):
+    """Apply one mandatory-verification profile to every GraphQL request."""
+
+    def __init__(self, *, tls_profile: ResolvedTLSProfile, **kwargs: Any) -> None:
+        request_kwargs = tls_profile.requests_kwargs()
+        verify = request_kwargs.pop("verify")
+        super().__init__(verify=verify, **request_kwargs, **kwargs)
+        self.tls_profile = tls_profile
+
+    def connect(self) -> None:
+        super().connect()
+        if self.session is not None:
+            self.tls_profile.configure_requests_session(self.session)
 
 
 class GraphQL:
@@ -42,8 +61,7 @@ class GraphQL:
         token: str | None = None,
         api_path: str = "/graphql",
         core_path: str = "/metadata",
-        verify: bool = True,
-        proxies: dict | None = None,
+        tls_profile: ResolvedTLSProfile | None = None,
         debug: bool = False,
     ):
         if not url:
@@ -55,8 +73,7 @@ class GraphQL:
         self.token = token
         self.api_path = api_path
         self.core_path = core_path
-        self.verify = verify
-        self.proxies = proxies
+        self.tls_profile = tls_profile or resolve_configured_tls_profile("twenty")
         self.debug = debug
 
         logging.basicConfig(
@@ -74,17 +91,15 @@ class GraphQL:
             headers["Authorization"] = f"Bearer {token}"
         self.headers = headers
 
-        self.transport = RequestsHTTPTransport(
+        self.transport = _ProfiledRequestsHTTPTransport(
             url=self.endpoint,
             headers=headers,
-            verify=verify,
-            proxies=proxies,
+            tls_profile=self.tls_profile,
         )
-        self.core_transport = RequestsHTTPTransport(
+        self.core_transport = _ProfiledRequestsHTTPTransport(
             url=self.core_endpoint,
             headers=headers,
-            verify=verify,
-            proxies=proxies,
+            tls_profile=self.tls_profile,
         )
         # Twenty disables GraphQL introspection; never fetch the schema.
         self.client = Client(
@@ -124,8 +139,8 @@ class GraphQL:
             )
             return result
         except Exception as e:
-            logging.error(f"GraphQL execution failed: {str(e)}")
-            raise ParameterError(f"Query execution failed: {str(e)}") from e
+            logging.error(f"GraphQL execution failed: {type(e).__name__}")
+            raise ParameterError(f"Query execution failed: {type(e).__name__}") from e
 
     # --- Auth / API key mutations (route through the CORE /metadata schema) ---
 

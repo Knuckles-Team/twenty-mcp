@@ -1,0 +1,36 @@
+{
+  "api_version": "graphos.io/v1",
+  "artifacts": {
+    "connector_manifest.yml": "9719eb3d08c4ae51bc3348e3307e34491a367a910af399b4356231c2f3a8c567",
+    "twenty_mcp/connectors/mcp_source_presets.json": "0c70e0edfaaf9fbd854ce776e74e2ee3596189b859faf2f7016e8db684e8e8e5",
+    "twenty_mcp/connectors/tool_schema_fingerprints.json": "b6eb74f6f9cc4f124d0faccaf17d184703ad609840d6772af785d0bd2daa5a78",
+    "twenty_mcp/ontology/fixtures/records.json": "2b74ff4c8e34c5d12520caa8b09bc2e875e450a9954c52f3329aeeb76ea0041f",
+    "twenty_mcp/ontology/mappings/source.yaml": "0f2e00e6f75f9ab8c6a163d5eacf5057561cf50a3b5804f8c0117c1e959bba57",
+    "twenty_mcp/ontology/migrations/manifest.json": "01323a0f4d36c9f56f2cd834c16faea0002cc3ee6b0402e0bd05181d0a4e3718",
+    "twenty_mcp/ontology/shapes/connector.shacl.ttl": "0b901fb2be06609aa4322983e747831a98b3e60d006cc2d3c9299593bd90c043",
+    "twenty_mcp/ontology/twenty.ttl": "ab7fa1375ca4d2f73380f67fc482d60bf912e38ba49076ee24778b30623f55e6"
+  },
+  "checks": {
+    "declared_tool_schema": "passed",
+    "manifest_integrity": "passed",
+    "privacy_contract": "passed",
+    "shacl_parse": "passed",
+    "synthetic_fixture_contract": "passed"
+  },
+  "compatibility": {
+    "agent_utilities": ">=1.27.1,<2",
+    "bundle_schema": "2",
+    "epistemic_graph": ">=2.23.1,<3"
+  },
+  "connector": "twenty-mcp",
+  "kind": "ConnectorSourceAttestation",
+  "live_certified": false,
+  "mode": "offline-source",
+  "schema_version": "2",
+  "signature": "zBByhpFmEhy6C3lYJlmimfVW9G_YdM1o_dAYZ15F1QlO1Nr_M_NcHjffAj6kLPjQH4rH1mQJ8OpKc9hY1ZNUBg",
+  "signature_algorithm": "ed25519",
+  "signer": "ontology-manifest-generator",
+  "signing_public_key": "q0Cp7bmQMqJhbofGKKw8xXC6KbFzukBDDke0UYVi8y4",
+  "status": "source-validated",
+  "validated_at": "2026-07-18T00:00:00Z"
+}

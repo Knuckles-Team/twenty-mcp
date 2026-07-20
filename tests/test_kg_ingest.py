@@ -9,6 +9,9 @@ CONCEPT:AU-KG.ingest.enterprise-source-extractor.
 
 from __future__ import annotations
 
+import pytest
+from agent_utilities.knowledge_graph.memory.native_ingest import NativeIngestError
+
 from twenty_mcp.kg_ingest import (
     extract_records,
     ingest_companies,
@@ -21,6 +24,7 @@ from twenty_mcp.kg_ingest import (
 class _FakeTxn:
     def __init__(self):
         self.nodes = {}
+        self.edges = []
         self.committed = False
         self.graph = None
 
@@ -31,33 +35,27 @@ class _FakeTxn:
     def add_node(self, txn, node_id, props):
         self.nodes[node_id] = props
 
+    def add_edge(self, txn, source, target, props):
+        self.edges.append((source, target, props))
+
     def commit(self, txn):
         self.committed = True
         return True
 
 
-class _FakeEdges:
-    def __init__(self):
-        self.edges = []
-
-    def add(self, src, dst, props):
-        self.edges.append((src, dst, props))
-
-
 class _FakeClient:
     def __init__(self):
         self.txn = _FakeTxn()
-        self.edges = _FakeEdges()
 
 
 def test_ingest_entities_writes_nodes_and_edges():
     c = _FakeClient()
     res = ingest_entities(
         [
-            {"id": "a", "type": "Person", "name": "p"},
-            {"id": "b", "type": "Company"},
+            {"id": "a", "node_type": "Person", "name": "p"},
+            {"id": "b", "node_type": "Company"},
         ],
-        [{"source": "a", "target": "b", "type": "worksAt"}],
+        [{"source": "a", "target": "b", "relationship": "worksAt"}],
         client=c,
         graph="__commons__",
     )
@@ -67,7 +65,7 @@ def test_ingest_entities_writes_nodes_and_edges():
     # provenance is stamped
     assert c.txn.nodes["a"]["source"] == "twenty-mcp"
     assert c.txn.nodes["a"]["domain"] == "twenty"
-    assert c.edges.edges == [("a", "b", {"type": "worksAt"})]
+    assert c.txn.edges == [("a", "b", {"relationship": "worksAt"})]
 
 
 def test_ingest_people_maps_person_and_worksat():
@@ -87,13 +85,13 @@ def test_ingest_people_maps_person_and_worksat():
     )
     assert res == {"nodes": 1, "edges": 1}
     node = c.txn.nodes["twenty:person:p-1"]
-    assert node["type"] == "Person"
+    assert node["node_type"] == "Person"
     assert node["name"] == "Jane Doe"
     assert node["primaryEmail"] == "jane@acme.com"
     assert node["jobTitle"] == "VP Sales"
     assert node["externalToolId"] == "p-1"
-    assert c.edges.edges == [
-        ("twenty:person:p-1", "twenty:company:co-9", {"type": "worksAt"})
+    assert c.txn.edges == [
+        ("twenty:person:p-1", "twenty:company:co-9", {"relationship": "worksAt"})
     ]
 
 
@@ -113,7 +111,7 @@ def test_ingest_companies_maps_company():
     )
     assert res == {"nodes": 1, "edges": 0}
     node = c.txn.nodes["twenty:company:co-9"]
-    assert node["type"] == "Company"
+    assert node["node_type"] == "Company"
     assert node["name"] == "Acme Corp"
     assert node["domainName"] == "acme.com"
     assert node["employees"] == 250
@@ -139,20 +137,20 @@ def test_ingest_opportunities_maps_amount_and_links():
     )
     assert res == {"nodes": 1, "edges": 2}
     node = c.txn.nodes["twenty:opportunity:op-3"]
-    assert node["type"] == "Opportunity"
+    assert node["node_type"] == "Opportunity"
     assert node["amount"] == 48000.0
     assert node["currencyCode"] == "USD"
     assert node["stage"] == "PROPOSAL"
     assert (
         "twenty:opportunity:op-3",
         "twenty:company:co-9",
-        {"type": "opportunityFor"},
-    ) in c.edges.edges
+        {"relationship": "opportunityFor"},
+    ) in c.txn.edges
     assert (
         "twenty:opportunity:op-3",
         "twenty:person:p-1",
-        {"type": "pointOfContact"},
-    ) in c.edges.edges
+        {"relationship": "pointOfContact"},
+    ) in c.txn.edges
 
 
 def test_extract_records_unwraps_twenty_response():
@@ -167,13 +165,11 @@ def test_extract_records_unwraps_twenty_response():
     ]
 
 
-def test_ingest_noops_without_engine():
-    # No injected client + no reachable engine -> clean no-op.
-    assert ingest_people([{"id": "p-1"}]) is None
+def test_retired_structural_alias_is_rejected():
+    with pytest.raises(NativeIngestError, match="canonical node_type"):
+        ingest_entities([{"id": "a", "type": "Person"}], client=_FakeClient())
 
 
-def test_ingest_empty_is_noop():
-    assert ingest_entities([], client=_FakeClient()) is None
-    assert ingest_people([], client=_FakeClient()) is None
-    assert ingest_companies([], client=_FakeClient()) is None
-    assert ingest_opportunities([], client=_FakeClient()) is None
+def test_empty_native_ingest_is_rejected():
+    with pytest.raises(NativeIngestError, match="at least one entity"):
+        ingest_entities([], client=_FakeClient())

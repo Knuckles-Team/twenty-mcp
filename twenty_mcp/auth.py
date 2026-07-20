@@ -4,6 +4,10 @@ from typing import Any
 
 from agent_utilities.base_utilities import get_logger
 from agent_utilities.core.config import setting
+from agent_utilities.core.transport_security import (
+    ResolvedTLSProfile,
+    resolve_configured_tls_profile,
+)
 
 from twenty_mcp.api_client import Api
 
@@ -16,7 +20,11 @@ def get_client() -> Api:
     token = setting("TWENTY_TOKEN", "")
     username = setting("TWENTY_MCP_USERNAME", "")
     password = setting("TWENTY_MCP_PASSWORD", "")
-    verify = setting("TWENTY_MCP_SSL_VERIFY", True)
+    tls_profile = resolve_configured_tls_profile(
+        "twenty",
+        profile_name=setting("TWENTY_TLS_PROFILE", None),
+        profile_ref=setting("TWENTY_TLS_PROFILE_REF", None),
+    )
 
     if not base_url:
         # Default fallback for testing
@@ -27,14 +35,14 @@ def get_client() -> Api:
         token=token,
         username=username,
         password=password,
-        verify=verify,
+        tls_profile=tls_profile,
     )
 
 
 def get_graphql_client(
     instance: str | None = None,
     token: str | None = None,
-    verify: bool | None = None,
+    tls_profile: ResolvedTLSProfile | None = None,
     config: dict | None = None,
 ) -> Any:
     """Factory function to create the Twenty GraphQL client.
@@ -51,8 +59,11 @@ def get_graphql_client(
     )
     if token is None:
         token = setting("TWENTY_TOKEN", "")
-    if verify is None:
-        verify = setting("TWENTY_MCP_SSL_VERIFY", True)
+    profile = tls_profile or resolve_configured_tls_profile(
+        "twenty",
+        profile_name=setting("TWENTY_TLS_PROFILE", None),
+        profile_ref=setting("TWENTY_TLS_PROFILE_REF", None),
+    )
 
     if not instance:
         instance = "http://localhost"
@@ -77,24 +88,24 @@ def get_graphql_client(
                 config=config,
                 audience=(config or {}).get("audience", instance),
                 scopes=(config or {}).get("delegated_scopes", "api"),
-                verify=verify,
             )
-            identity = get_user_identity()
-            logger.info(
-                "Using OIDC delegated token for Twenty GraphQL API",
-                extra={
-                    "user_email": identity.get("email"),
-                    "instance": instance,
-                },
+            get_user_identity()
+            logger.info("Using OIDC delegated token for Twenty GraphQL API")
+            return GraphQL(
+                url=instance,
+                token=delegated_token,
+                tls_profile=profile,
             )
-            return GraphQL(url=instance, token=delegated_token, verify=verify)
         except Exception as e:
             logger.error(
                 "OIDC delegation failed for Twenty GraphQL",
-                extra={"error_type": type(e).__name__, "error_message": str(e)},
+                extra={
+                    "error_type": type(e).__name__,
+                    "error_message": type(e).__name__,
+                },
             )
             # Fall through to fixed-token path on delegation failure.
 
     # --- Path 2: Fixed Credentials (TWENTY_TOKEN) — token may be empty ---
     logger.info("Using fixed credentials for Twenty GraphQL API")
-    return GraphQL(url=instance, token=token or None, verify=verify)
+    return GraphQL(url=instance, token=token or None, tls_profile=profile)

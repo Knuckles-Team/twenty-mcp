@@ -22,7 +22,7 @@ The base install is intentionally minimal. Install the extra for what you need:
 | Extra | Install | Pulls in |
 |---|---|---|
 | `mcp` | `pip install "twenty-mcp[mcp]"` | FastMCP MCP-server runtime (`agent-utilities[mcp]`) |
-| `agent` | `pip install "twenty-mcp[agent]"` | Pydantic-AI agent + Logfire tracing (`agent-utilities[agent,logfire]`) |
+| `agent` | `pip install "twenty-mcp[agent]"` | Pydantic-AI agent + Logfire tracing (`agent-utilities[agent-runtime,logfire]`) |
 | `all` | `pip install "twenty-mcp[all]"` | Everything above |
 | `test` | `pip install "twenty-mcp[test]"` | `pytest`, `pytest-asyncio`, `pytest-cov`, `pytest-xdist` |
 
@@ -48,16 +48,16 @@ uv run twenty-mcp
 
 ## Prebuilt Docker image
 
-A multi-stage, slim image is published on every release (installs
+A multi-stage runtime image is published on every release (installs
 `twenty-mcp[all]`, entrypoint `twenty-mcp`):
 
 ```bash
-docker pull knucklessg1/twenty-mcp:latest
+docker pull example/twenty-mcp@sha256:<digest>
 
 docker run --rm -i \
   -e TWENTY_URL=http://your-twenty:3000 \
   -e TWENTY_TOKEN=your_developer_access_token \
-  knucklessg1/twenty-mcp:latest        # stdio transport (default)
+  example/twenty-mcp@sha256:<digest>        # stdio transport (default)
 ```
 
 For an HTTP server with a published port, see [Deployment](deployment.md).

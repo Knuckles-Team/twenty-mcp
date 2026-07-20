@@ -30,9 +30,8 @@ over a tolerant `requests` session.
 from twenty_mcp.api_client import Api
 
 api = Api(
-    base_url="http://your-twenty:3000",
+    base_url="https://twenty.example.invalid",
     token="your_developer_access_token",
-    verify=True,
 )
 
 # Reads

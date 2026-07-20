@@ -29,7 +29,7 @@ def register_metadata_tools(mcp: FastMCP):
         try:
             kwargs = json.loads(params_json)
         except Exception as e:
-            return {"error": f"Invalid params_json: {e}"}
+            return {"error": "Operation failed"}
 
         kwargs = {k: v for k, v in kwargs.items() if v is not None}
 
@@ -45,4 +45,4 @@ def register_metadata_tools(mcp: FastMCP):
         try:
             return method(**kwargs)
         except Exception as e:
-            return {"error": f"Failed to execute metadata operation {action}: {e}"}
+            return {"error": "Operation failed"}

@@ -1,0 +1,8 @@
+{
+  "algorithm": "agent-utilities:mcp-tool-schema-compat:v1",
+  "connector": "twenty-mcp",
+  "schema_version": "1",
+  "tools": {
+    "twenty_mcp_crm": "6a16237312c6d8f754bbce0342d089c23155b1e0abe65dd925bf2c76a2be1ee4"
+  }
+}

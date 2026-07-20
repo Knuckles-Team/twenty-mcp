@@ -29,7 +29,7 @@ def register_oauth_tools(mcp: FastMCP):
         try:
             kwargs = json.loads(params_json)
         except Exception as e:
-            return {"error": f"Invalid params_json: {e}"}
+            return {"error": "Operation failed"}
 
         kwargs = {k: v for k, v in kwargs.items() if v is not None}
 
@@ -39,7 +39,7 @@ def register_oauth_tools(mcp: FastMCP):
                 res = client.validate_webhook_signature(**kwargs)
                 return {"valid": res}
             except Exception as e:
-                return {"error": f"Failed to validate webhook signature: {e}"}
+                return {"error": "Operation failed"}
 
         # Dynamic dispatch
         method = getattr(client, action, None)
@@ -53,4 +53,4 @@ def register_oauth_tools(mcp: FastMCP):
         try:
             return method(**kwargs)
         except Exception as e:
-            return {"error": f"Failed to execute OAuth operation {action}: {e}"}
+            return {"error": "Operation failed"}

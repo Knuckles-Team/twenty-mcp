@@ -139,6 +139,7 @@ sync:
   updated_field: updatedAt
   pagination: null
   doc_type: crm-company
+  tool_schema_sha256: 6a16237312c6d8f754bbce0342d089c23155b1e0abe65dd925bf2c76a2be1ee4
   raw:
     server: twenty-mcp
     tool: twenty_mcp_crm
@@ -160,6 +161,7 @@ sync:
   updated_field: updatedAt
   pagination: null
   doc_type: crm-opportunity
+  tool_schema_sha256: 6a16237312c6d8f754bbce0342d089c23155b1e0abe65dd925bf2c76a2be1ee4
   raw:
     server: twenty-mcp
     tool: twenty_mcp_crm
@@ -181,6 +183,7 @@ sync:
   updated_field: updatedAt
   pagination: null
   doc_type: crm-contact
+  tool_schema_sha256: 6a16237312c6d8f754bbce0342d089c23155b1e0abe65dd925bf2c76a2be1ee4
   raw:
     server: twenty-mcp
     tool: twenty_mcp_crm
@@ -193,16 +196,19 @@ sync:
     doc_type: crm-contact
 provenance:
   generated_by: scripts/generate_connector_manifests.py
-  generated_at: '2026-07-09T00:00:00Z'
+  generated_at: '2026-07-18T00:00:00Z'
   source_artifacts:
   - twenty_mcp/connectors/mcp_source_presets.json
+  - twenty_mcp/connectors/tool_schema_fingerprints.json
   - twenty_mcp/ontology/twenty.ttl
   integrity:
     algorithm: urdna2015-sha256
     hash: f3c112283f5562c787dd1fdf36bad4bd6153550c385531013c9eeaebb56054f4
     triple_count: 61
   signer: ontology-manifest-generator
-  signature: 90739897640ff9497ffbb540d878bd8df01249dbd11cfc1429702473c7fa61ec
+  signature_algorithm: ed25519
+  signing_public_key: q0Cp7bmQMqJhbofGKKw8xXC6KbFzukBDDke0UYVi8y4
+  signature: fWSF1fJO0KPMbblYllsJpvnqPrnG1rzEWR7trQwFFPy3ZsCDnCIle38fxuqpXIQUiZ6bykEP6p23UERBnXXcBw
 policy:
   pii_fields: {}
   tenant_boundary: null

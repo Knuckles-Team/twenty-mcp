@@ -83,7 +83,7 @@ def test_execute_gql_core_routes_to_core_client(mock_gql_clients):
 def test_execute_gql_error_path(mock_gql_clients):
     client = GraphQL(url="http://twenty.local", token="abc")
     mock_gql_clients["object"].execute.side_effect = Exception("boom")
-    with pytest.raises(ParameterError, match="Query execution failed: boom"):
+    with pytest.raises(ParameterError, match="Query execution failed: Exception"):
         client.execute_gql("query { foo }")
 
 

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Twenty MCP Operations"
+  short_description: "Help with Twenty MCP Operations tasks"
+  default_prompt: "Use $twenty-mcp-operations to complete a governed provider workflow."

@@ -39,14 +39,14 @@ def register_graphql_tools(mcp: FastMCP):
         try:
             vars_dict = json.loads(variables) if variables else None
         except Exception as e:
-            return {"error": f"Invalid variables JSON: {e}"}
+            return {"error": "Operation failed"}
 
         try:
             return client.execute_gql(
                 query_str=query, variables=vars_dict, operation_name=operation_name
             )
         except Exception as e:
-            return {"error": f"GraphQL execution failed: {str(e)}"}
+            return {"error": f"GraphQL execution failed: {type(e).__name__}"}
 
     @mcp.tool(tags={"graphql"})
     async def twenty_discover_graphql_schema(
@@ -114,7 +114,7 @@ def register_graphql_tools(mcp: FastMCP):
             metadata_client = get_client()
         except Exception as e:  # pragma: no cover - defensive
             return {
-                "error": f"Failed to discover Twenty metadata: {str(e)}",
+                "error": f"Failed to discover Twenty metadata: {type(e).__name__}",
             }
 
         try:
@@ -127,7 +127,7 @@ def register_graphql_tools(mcp: FastMCP):
                     metadata = metadata_client.get_metadata_objects()
             return {"source": "metadata-api", "metadata": metadata}
         except Exception as e:
-            return {"error": f"Failed to discover Twenty metadata: {str(e)}"}
+            return {"error": f"Failed to discover Twenty metadata: {type(e).__name__}"}
 
     @mcp.tool(tags={"graphql", "auth"})
     async def twenty_provision_api_key(
@@ -157,7 +157,7 @@ def register_graphql_tools(mcp: FastMCP):
                 expires_at=expires_at,
             )
         except Exception as e:
-            return {"error": f"API key provisioning failed: {str(e)}"}
+            return {"error": f"API key provisioning failed: {type(e).__name__}"}
 
 
 def _introspection_disabled(result: Any) -> bool:

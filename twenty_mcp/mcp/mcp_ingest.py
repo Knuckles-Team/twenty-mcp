@@ -66,7 +66,7 @@ def register_ingest_tools(mcp: FastMCP):
         try:
             kwargs = json.loads(params_json) if params_json else {}
         except Exception as e:  # noqa: BLE001
-            return {"error": f"Invalid params_json: {e}"}
+            return {"error": "Operation failed"}
         kwargs = {k: v for k, v in kwargs.items() if v is not None}
 
         method = getattr(client, list_method_name, None)
@@ -76,7 +76,7 @@ def register_ingest_tools(mcp: FastMCP):
             params = kwargs or None
             response = method(params=params) if params is not None else method()
         except Exception as e:  # noqa: BLE001
-            return {"error": f"Failed to list Twenty {obj}: {e}"}
+            return {"error": "Operation failed"}
 
         records = extract_records(response, obj)
         result = mapper(records)

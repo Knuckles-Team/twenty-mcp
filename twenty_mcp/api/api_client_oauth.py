@@ -94,7 +94,7 @@ class OauthApi(ApiClientBase):
         response = self._session.post(url, data=data)
         if response.status_code >= 400:
             raise Exception(
-                f"OAuth/Token error: {response.status_code} - {response.text}"
+                f"OAuth/Token error: {response.status_code}"
             )
 
         try:

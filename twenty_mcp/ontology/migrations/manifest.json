@@ -1,0 +1,6 @@
+{
+  "connector": "twenty-mcp",
+  "current_ontology_source": "twenty",
+  "migrations": [],
+  "schema_version": "1"
+}

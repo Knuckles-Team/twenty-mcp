@@ -1,9 +1,12 @@
-import os
 from typing import Any
 from urllib.parse import urljoin
 
 import requests
-import urllib3
+from agent_utilities.core.config import setting
+from agent_utilities.core.transport_security import (
+    ResolvedTLSProfile,
+    resolve_configured_tls_profile,
+)
 
 
 class ApiClientBase:
@@ -13,18 +16,16 @@ class ApiClientBase:
         token: str | None = None,
         username: str | None = None,
         password: str | None = None,
-        verify: bool = True,
+        tls_profile: ResolvedTLSProfile | None = None,
     ):
         self.base_url = base_url
         self.token = token
         self.username = username
         self.password = password
         self._session = requests.Session()
-        self._session.verify = verify
-        self.api_prefix = os.getenv("TWENTY_API_PREFIX", "/rest")
-
-        if not verify:
-            urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+        self.tls_profile = tls_profile or resolve_configured_tls_profile("twenty")
+        self.tls_profile.configure_requests_session(self._session)
+        self.api_prefix = setting("TWENTY_API_PREFIX", "/rest")
 
         if token:
             self._session.headers.update({"Authorization": f"Bearer {token}"})
@@ -53,7 +54,7 @@ class ApiClientBase:
         )
 
         if response.status_code >= 400:
-            raise Exception(f"API error: {response.status_code} - {response.text}")
+            raise Exception(f"API error: {response.status_code}")
 
         if response.status_code == 204 or not response.text.strip():
             return {"status": "success"}

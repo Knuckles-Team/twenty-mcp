@@ -1,0 +1,42 @@
+schema_version: '1'
+connector: twenty-mcp
+ontology_source: twenty
+sync:
+- preset: twenty-companies
+  server: twenty-mcp
+  tool: twenty_mcp_crm
+  action: get_companies
+  records_path: data.companies
+  id_field: id
+  title_field: name
+  text_field: domainName.primaryLinkUrl
+  updated_field: updatedAt
+  doc_type: crm-company
+  tool_schema_sha256: 6a16237312c6d8f754bbce0342d089c23155b1e0abe65dd925bf2c76a2be1ee4
+- preset: twenty-opportunities
+  server: twenty-mcp
+  tool: twenty_mcp_crm
+  action: get_opportunities
+  records_path: data.opportunities
+  id_field: id
+  title_field: name
+  text_field: stage
+  updated_field: updatedAt
+  doc_type: crm-opportunity
+  tool_schema_sha256: 6a16237312c6d8f754bbce0342d089c23155b1e0abe65dd925bf2c76a2be1ee4
+- preset: twenty-people
+  server: twenty-mcp
+  tool: twenty_mcp_crm
+  action: get_people
+  records_path: data.people
+  id_field: id
+  title_field: name.firstName
+  text_field: jobTitle
+  updated_field: updatedAt
+  doc_type: crm-contact
+  tool_schema_sha256: 6a16237312c6d8f754bbce0342d089c23155b1e0abe65dd925bf2c76a2be1ee4
+governance:
+  default_acl: quarantine
+  identity: opaque-reference
+  tenant: required-at-materialization
+  provenance: required-at-materialization
