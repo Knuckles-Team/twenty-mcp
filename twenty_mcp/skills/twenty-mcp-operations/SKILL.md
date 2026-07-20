@@ -1,5 +1,6 @@
 ---
 name: twenty-mcp-operations
+skill_type: skill
 description: >-
   Operate twenty-mcp through its governed MCP and GraphOS capabilities, including twenty contacts, twenty kg sync, twenty pipeline. Use when a request requires this provider's read, change, automation, ingestion, troubleshooting, or evidence workflows.
 ---
