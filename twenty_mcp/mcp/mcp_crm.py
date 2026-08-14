@@ -30,7 +30,7 @@ def register_crm_tools(mcp: FastMCP):
 
         try:
             kwargs = json.loads(params_json)
-        except Exception as e:
+        except Exception:
             return {"error": "Operation failed"}
 
         kwargs = {k: v for k, v in kwargs.items() if v is not None}
@@ -46,5 +46,5 @@ def register_crm_tools(mcp: FastMCP):
 
         try:
             return method(**kwargs)
-        except Exception as e:
+        except Exception:
             return {"error": "Operation failed"}

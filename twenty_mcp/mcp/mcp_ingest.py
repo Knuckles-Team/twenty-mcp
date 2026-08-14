@@ -65,7 +65,7 @@ def register_ingest_tools(mcp: FastMCP):
 
         try:
             kwargs = json.loads(params_json) if params_json else {}
-        except Exception as e:  # noqa: BLE001
+        except Exception:  # noqa: BLE001
             return {"error": "Operation failed"}
         kwargs = {k: v for k, v in kwargs.items() if v is not None}
 
@@ -75,7 +75,7 @@ def register_ingest_tools(mcp: FastMCP):
         try:
             params = kwargs or None
             response = method(params=params) if params is not None else method()
-        except Exception as e:  # noqa: BLE001
+        except Exception:  # noqa: BLE001
             return {"error": "Operation failed"}
 
         records = extract_records(response, obj)

@@ -38,7 +38,7 @@ def register_graphql_tools(mcp: FastMCP):
 
         try:
             vars_dict = json.loads(variables) if variables else None
-        except Exception as e:
+        except Exception:
             return {"error": "Operation failed"}
 
         try:
