@@ -40,6 +40,9 @@ twenty-mcp = "twenty_mcp.connectors"
 [project.entry-points."agent_utilities.prompt_providers"]
 twenty-mcp = "twenty_mcp.prompts"
 
+[tool.uv.workspace]
+members = ["."]
+
 [tool.setuptools]
 include-package-data = true
 
