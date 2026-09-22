@@ -1,3 +1,5 @@
+from typing import Literal
+
 """MCP tools for crm operations."""
 
 from fastmcp import Context, FastMCP
@@ -14,7 +16,32 @@ def register_crm_tools(mcp: FastMCP):
 
     @mcp.tool(tags={"crm"})
     async def twenty_mcp_crm(
-        action: str = Field(
+        action: Literal[
+            "batch_create_records",
+            "batch_delete_records",
+            "batch_update_records",
+            "create_company",
+            "create_opportunity",
+            "create_person",
+            "create_record",
+            "delete_company",
+            "delete_opportunity",
+            "delete_person",
+            "delete_record",
+            "execute_gql",
+            "get_companies",
+            "get_company",
+            "get_opportunities",
+            "get_opportunity",
+            "get_people",
+            "get_person",
+            "get_record",
+            "get_records",
+            "update_company",
+            "update_opportunity",
+            "update_person",
+            "update_record",
+        ] = Field(
             description="Action to perform. e.g. 'get_people', 'get_person', 'create_person', 'update_person', 'delete_person', 'get_companies', 'get_company', 'create_company', 'update_company', 'delete_company', 'get_opportunities', 'get_opportunity', 'create_opportunity', 'update_opportunity', 'delete_opportunity', 'get_records', 'get_record', 'create_record', 'update_record', 'delete_record', 'batch_create_records', 'batch_update_records', 'batch_delete_records', 'execute_gql'."
         ),
         params_json: str = Field(

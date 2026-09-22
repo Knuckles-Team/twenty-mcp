@@ -147,7 +147,7 @@ sync:
   updated_field: updatedAt
   pagination: null
   doc_type: crm-company
-  tool_schema_sha256: 6a16237312c6d8f754bbce0342d089c23155b1e0abe65dd925bf2c76a2be1ee4
+  tool_schema_sha256: 5d3779a703117213d4160242769cfae7563e9fea7b4d9898e69f0f466ac0ffdb
   raw:
     server: twenty-mcp
     tool: twenty_mcp_crm
@@ -169,7 +169,7 @@ sync:
   updated_field: updatedAt
   pagination: null
   doc_type: crm-opportunity
-  tool_schema_sha256: 6a16237312c6d8f754bbce0342d089c23155b1e0abe65dd925bf2c76a2be1ee4
+  tool_schema_sha256: 5d3779a703117213d4160242769cfae7563e9fea7b4d9898e69f0f466ac0ffdb
   raw:
     server: twenty-mcp
     tool: twenty_mcp_crm
@@ -191,7 +191,7 @@ sync:
   updated_field: updatedAt
   pagination: null
   doc_type: crm-contact
-  tool_schema_sha256: 6a16237312c6d8f754bbce0342d089c23155b1e0abe65dd925bf2c76a2be1ee4
+  tool_schema_sha256: 5d3779a703117213d4160242769cfae7563e9fea7b4d9898e69f0f466ac0ffdb
   raw:
     server: twenty-mcp
     tool: twenty_mcp_crm
