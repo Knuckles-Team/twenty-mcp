@@ -14,7 +14,18 @@ def register_crm_tools(mcp: FastMCP):
     CONCEPT:TW-OS.governance.twenty
     """
 
-    @mcp.tool(tags={"crm"})
+    @mcp.tool(
+        tags={"crm"},
+        annotations={
+            "readOnlyHint": False,
+            "destructiveHint": True,
+            "idempotentHint": False,
+            "openWorldHint": True,
+        },
+        meta={
+            "eg.annotations": {"modalities_in": ["text"], "modalities_out": ["text"]}
+        },
+    )
     async def twenty_mcp_crm(
         action: Literal[
             "batch_create_records",
