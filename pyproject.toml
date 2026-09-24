@@ -9,7 +9,13 @@ description = "Twenty CRM REST/GraphQL MCP Server for Agentic AI!"
 readme = "README.md"
 classifiers = [ "Development Status :: 4 - Beta", "License :: OSI Approved :: MIT License", "Environment :: Console", "Operating System :: POSIX :: Linux", "Programming Language :: Python :: 3",]
 requires-python = ">=3.12, <3.15"
-dependencies = [ "agent-utilities>=2.0.0,<3.0.0", "gql>=4.0.0",]
+# NOTE (EH-484 policy update, see /var/tmp/l9/finish/au-decon-G4e/SDK-GAPS.md gaps
+# #0 and #1): agent-utilities is kept for kg_ingest.py's native_ingest import (no
+# EG-client ingest facade exists yet -- no fail-closed stub) and for
+# mcp/mcp_graphql.py's ctx_graphql_list_types/ctx_graphql_get_type_details (not
+# extracted into agent_connector_sdk at all -- no vendored shim). Drop
+# agent-utilities once both gaps land.
+dependencies = [ "agent-connector-sdk>=0.1.0,<1.0.0", "agent-utilities>=2.0.0,<3.0.0", "gql>=4.0.0", "httpx>=0.28.1",]
 [[project.authors]]
 name = "Project Maintainers"
 email = "maintainers@users.noreply.github.com"
@@ -18,15 +24,11 @@ email = "maintainers@users.noreply.github.com"
 text = "MIT"
 
 [project.optional-dependencies]
-mcp = [ "agent-utilities[mcp]>=2.0.0,<3.0.0",]
-agent = [ "agent-utilities[agent-runtime,logfire]>=2.0.0,<3.0.0",]
 gql = [ "gql>=4.0.0",]
-all = [ "agent-utilities[mcp,agent-runtime,logfire]>=2.0.0,<3.0.0", "gql>=4.0.0",]
 test = [ "pytest-xdist>=3.8.0", "pytest>=9.1.1", "pytest-asyncio>=1.4.0", "pytest-cov>=7.1.0",]
 
 [project.scripts]
 twenty-mcp = "twenty_mcp.mcp_server:mcp_server"
-twenty-agent = "twenty_mcp.agent_server:agent_server"
 
 [project.entry-points."agent_utilities.skill_providers"]
 twenty-mcp = "twenty_mcp.skills"
@@ -74,4 +76,5 @@ override-dependencies = [
 ]
 
 [tool.uv.sources]
+agent-connector-sdk = { path = ".uv-workspace-siblings/agent-connector-sdk", editable = true }
 agent-utilities = { path = ".uv-workspace-siblings/agent-utilities", editable = true }

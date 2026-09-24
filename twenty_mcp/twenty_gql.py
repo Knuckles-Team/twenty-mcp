@@ -24,11 +24,9 @@ specifics:
 import logging
 from typing import Any
 
-from agent_utilities.core.exceptions import MissingParameterError, ParameterError
-from agent_utilities.core.transport_security import (
-    ResolvedTLSProfile,
-    resolve_configured_tls_profile,
-)
+from agent_connector_sdk.exceptions import MissingParameterError, ParameterError
+from agent_connector_sdk.tls.profile import ResolvedTLSProfile
+from agent_connector_sdk.tls.resolve import resolve_tls_profile
 from gql import Client, gql
 from gql.transport.requests import RequestsHTTPTransport
 
@@ -73,7 +71,7 @@ class GraphQL:
         self.token = token
         self.api_path = api_path
         self.core_path = core_path
-        self.tls_profile = tls_profile or resolve_configured_tls_profile("twenty")
+        self.tls_profile = tls_profile or resolve_tls_profile("twenty")
         self.debug = debug
 
         logging.basicConfig(
