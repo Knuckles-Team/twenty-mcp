@@ -41,9 +41,9 @@ Twenty MCP provides a high-performance, model-optimized interface to Twenty capa
 
 ## ⚙️ Dynamic Tool Selection & Visibility
 
-This MCP server supports dynamic toolset selection and visibility filtering at runtime. This allows you to restrict the set of exposed tools in order to prevent blowing up the LLM's context window.
+This MCP server supports dynamic toolset selection and visibility filtering at runtime. This allows the operator to restrict the set of exposed tools to prevent blowing up the LLM's context window.
 
-You can configure tool filtering via multiple input channels:
+The operator can configure tool filtering via multiple input channels:
 
 - **CLI Arguments:** Pass `--tools` or `--toolsets` (or their disabled counterparts `--disabled-tools` and `--disabled-toolsets`) during startup.
 - **Environment Variables:** Define standard environment variables:
@@ -52,11 +52,11 @@ You can configure tool filtering via multiple input channels:
 - **HTTP SSE Request Headers:** Pass custom headers during transport initialization:
   - `x-mcp-enabled-tools` / `x-mcp-disabled-tools`
   - `x-mcp-enabled-tags` / `x-mcp-disabled-tags`
-- **HTTP SSE Request Query Parameters:** Append query parameters directly to your transport connection URL:
+- **HTTP SSE Request Query Parameters:** Append query parameters directly to the operator's transport connection URL:
   - `?tools=tool1,tool2`
   - `?tags=tag1`
 
-When query strings or parameters are supplied, an LLM-free **Knowledge Graph resolution layer** (using `DynamicToolOrchestrator`) matches query intents against known tool tags, names, or descriptions, with safe fallback and automated 24-hour background cache refreshing.
+When query strings or parameters are provided, an LLM-free **Knowledge Graph resolution layer** (using `DynamicToolOrchestrator`) matches query intents against known tool tags, names, or descriptions, with safe fallback and automated 24-hour background cache refreshing.
 
 
 ---
@@ -65,15 +65,15 @@ When query strings or parameters are supplied, an LLM-free **Knowledge Graph res
 
 > **Install the connector-focused `[mcp]` extra.** Examples use `twenty-mcp[mcp]` to add
 > FastMCP / FastAPI through `agent-utilities[mcp]`; the required Agent Utilities core
-> still carries `epistemic-graph[full]`. The `[agent]` extra additionally
+> still carries `epistemic-graph[full]`. The `[agent]` extra also
 > enables model orchestration.
 
-Pick the extra that matches what you want to run:
+Pick the extra that matches what the operator want to run:
 
 | Extra | Installs | Use when |
 |-------|----------|----------|
-| `twenty-mcp[mcp]` | Connector-focused MCP server (`agent-utilities[mcp]` — FastMCP/FastAPI + `epistemic-graph[full]`) | You only run the **MCP server** (smallest install / image) |
-| `twenty-mcp[agent]` | Agent runtime (`agent-utilities[agent-runtime,logfire]` — model orchestration + `epistemic-graph[full]`) | You run the **integrated agent** |
+| `twenty-mcp[mcp]` | Connector-focused MCP server (`agent-utilities[mcp]` — FastMCP/FastAPI + `epistemic-graph[full]`) | The operator only run the **MCP server** (smallest install / image) |
+| `twenty-mcp[agent]` | Agent runtime (`agent-utilities[agent-runtime,logfire]` — model orchestration + `epistemic-graph[full]`) | The operator run the **integrated agent** |
 | `twenty-mcp[all]` | Everything (`mcp` + `agent` + `logfire` + `gql`) | Development / both surfaces |
 
 ```bash
@@ -105,7 +105,7 @@ docker build --target agent -t example/twenty-mcp:agent-local docker/   # agent 
 
 Both `[mcp]` and `[agent]` carry the **epistemic-graph** engine through the required
 Agent Utilities core dependency (`epistemic-graph[full]`). The `[mcp]` extra keeps
-the server connector-focused; `[agent]` additionally enables model orchestration. Local
+the server connector-focused; `[agent]` also enables model orchestration. Local
 deployments can use the bundled engine. For production or shared state, run
 **epistemic-graph as a dedicated database service** and configure the runtime to use it.
 Deployment recipes (single-node + Raft HA), connection configuration, and architecture
@@ -116,7 +116,7 @@ diagrams are documented in the
 
 ## Usage
 
-You can launch the FastMCP server in stdio mode via Python module execution:
+The operator can start the FastMCP server in stdio mode via Python module execution:
 
 ```python
 import asyncio
@@ -131,7 +131,7 @@ if __name__ == "__main__":
     asyncio.run(main())
 ```
 
-For direct shell launch, execute:
+For direct shell start, run:
 
 ```bash
 python -m twenty_mcp.mcp_server
@@ -142,8 +142,8 @@ python -m twenty_mcp.mcp_server
 ## Configuration
 
 The package is fully configurable via the environment variables listed below. A local
-template is supplied inside [.env.example](.env.example) — copy it to `.env` and fill in
-your service endpoint parameters before starting execution.
+template is provided inside [.env.example](.env.example) — copy it to `.env` and fill in
+the operator's service endpoint parameters before starting execution.
 
 ### Connection & credentials
 | Variable | Description | Default |
@@ -281,7 +281,7 @@ graph TD
 ## Deployment
 
 ### Bare-Metal (Standard pip)
-1. Set up your Python virtual environment (>= 3.10).
+1. Set up the operator's Python virtual environment (>= 3.10).
 2. Install the package: `pip install .[all]`
 3. Export credentials:
    ```bash

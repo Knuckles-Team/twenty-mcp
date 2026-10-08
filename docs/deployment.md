@@ -120,7 +120,7 @@ curl -s http://localhost:8000/health        # {"status":"OK"}
 
 Plus `HOST` / `PORT` / `TRANSPORT` for HTTP transports. The full set is documented in
 [`.env.example`](https://github.com/Knuckles-Team/twenty-mcp/blob/main/.env.example).
-Copy it to `.env` and populate only what you use; an absent `TWENTY_TOKEN` leaves the
+Copy it to `.env` and populate only what the operator use; an absent `TWENTY_TOKEN` leaves the
 client unauthenticated rather than raising.
 
 ### Backing service
@@ -210,7 +210,7 @@ API key (for example `LLM_API_KEY` / `OPENAI_API_KEY`).
 
 ## Behind a Caddy reverse proxy
 
-Expose the HTTP server on a hostname with automatic TLS. Add to your `Caddyfile`:
+Expose the HTTP server on a hostname with automatic TLS. Add to the operator's `Caddyfile`:
 
 ```caddy
 # Internal (self-signed) — homelab .example.invalid zone
@@ -254,7 +254,7 @@ this as a tool.
 
 ## Register with an MCP client
 
-Add to your client's `mcp_config.json`:
+Add to the operator's client's `mcp_config.json`:
 
 ```json
 {
