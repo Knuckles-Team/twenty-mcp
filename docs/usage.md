@@ -1,7 +1,7 @@
 # Usage — MCP / API / Agent
 
 `twenty-mcp` exposes the same capability three ways: as **MCP tools** an agent calls,
-as a **Python API** (`Api`) you import, and as an **A2A agent** you converse with.
+as a **Python API** (`Api`) the operator import, and as an **A2A agent** the operator converse with.
 
 ## As an MCP server
 
