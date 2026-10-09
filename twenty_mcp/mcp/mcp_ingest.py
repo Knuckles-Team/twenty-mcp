@@ -79,7 +79,7 @@ def register_ingest_tools(mcp: FastMCP):
             return {"error": "Operation failed"}
 
         records = extract_records(response, obj)
-        result = mapper(records)
+        result = await mapper(records)
         return {"object": obj, "listed": len(records), "ingested": result}
 
     return None
