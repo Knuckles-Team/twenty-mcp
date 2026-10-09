@@ -1,9 +1,9 @@
 """Native epistemic-graph ingestion for Twenty CRM records.
 
-All writes use the required ``agent_utilities.knowledge_graph.memory.native_ingest``
-primitive. Nodes use canonical ``node_type`` and edges use canonical ``relationship``;
-nodes and edges commit in one native transaction. Missing engine dependencies, rejected
-records, conflicts, and transaction failures propagate as ``NativeIngestError``.
+All writes use the shared ``agent_connector_sdk.ingest`` knowledge-ingest facade.
+Nodes use canonical ``node_type`` and edges use canonical ``relationship``; nodes and
+edges commit in one request. Missing engine configuration, rejected records, and
+commit failures propagate as ``IngestUnavailableError``/``IngestError``.
 """
 
 from __future__ import annotations
@@ -11,8 +11,14 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from agent_utilities.knowledge_graph.memory.native_ingest import (
-    ingest_entities as _native_ingest_entities,
+from agent_connector_sdk.ingest import (
+    ChangeSet,
+    Entity,
+    IngestBinding,
+    IngestError,
+    KnowledgeIngest,
+    Relationship,
+    current_ingest,
 )
 
 logger = logging.getLogger("twenty_mcp.kg")
@@ -20,25 +26,47 @@ logger = logging.getLogger("twenty_mcp.kg")
 _SOURCE = "twenty-mcp"
 _DOMAIN = "twenty"
 
+_BINDING = IngestBinding(connector="twenty-mcp", stream=_DOMAIN)
 
-def ingest_entities(
+
+def _to_entity(record: dict[str, Any]) -> Entity:
+    return Entity(
+        id=record.get("id"),
+        node_type=record.get("node_type"),
+        properties={k: v for k, v in record.items() if k not in ("id", "node_type")},
+    )
+
+
+def _to_relationship(record: dict[str, Any]) -> Relationship:
+    props = {
+        k: v
+        for k, v in record.items()
+        if k not in ("source", "target", "relationship")
+    }
+    return Relationship(
+        source=record["source"],
+        target=record["target"],
+        relationship=record["relationship"],
+        properties=props or None,
+    )
+
+
+async def ingest_entities(
     entities: list[dict[str, Any]],
     relationships: list[dict[str, Any]] | None = None,
     *,
-    source: str = _SOURCE,
-    domain: str = _DOMAIN,
-    client: Any | None = None,
-    graph: str | None = None,
+    ingest: KnowledgeIngest | None = None,
 ) -> dict[str, int]:
     """Write canonical typed nodes and relationships in one native transaction."""
-    return _native_ingest_entities(
-        entities,
-        relationships,
-        source=source,
-        domain=domain,
-        client=client,
-        graph=graph,
+    if not entities:
+        raise IngestError("ingest_entities needs at least one entity")
+    change_set = ChangeSet(
+        entities=tuple(_to_entity(e) for e in entities),
+        relationships=tuple(_to_relationship(r) for r in relationships or ()),
     )
+    service = ingest or current_ingest()
+    receipt = await service.submit(_BINDING, change_set)
+    return {"nodes": receipt.affected_count, "edges": receipt.relationship_count}
 
 
 # --- record → node field extraction helpers ---------------------------------
@@ -95,11 +123,10 @@ def _amount(record: dict[str, Any]) -> tuple[float | None, str | None]:
 # --- typed mappers -----------------------------------------------------------
 
 
-def ingest_people(
+async def ingest_people(
     people: list[dict[str, Any]],
     *,
-    client: Any | None = None,
-    graph: str | None = None,
+    ingest: KnowledgeIngest | None = None,
 ) -> dict[str, int]:
     """Map Twenty people records → ``:Person`` (+ ``:Company`` / ``:worksAt``) nodes."""
     entities: list[dict[str, Any]] = []
@@ -130,14 +157,13 @@ def ingest_people(
                     "relationship": "worksAt",
                 }
             )
-    return ingest_entities(entities, relationships, client=client, graph=graph)
+    return await ingest_entities(entities, relationships, ingest=ingest)
 
 
-def ingest_companies(
+async def ingest_companies(
     companies: list[dict[str, Any]],
     *,
-    client: Any | None = None,
-    graph: str | None = None,
+    ingest: KnowledgeIngest | None = None,
 ) -> dict[str, int]:
     """Map Twenty company records → ``:Company`` nodes."""
     entities: list[dict[str, Any]] = []
@@ -157,14 +183,13 @@ def ingest_companies(
                 "externalToolId": str(cid),
             }
         )
-    return ingest_entities(entities, None, client=client, graph=graph)
+    return await ingest_entities(entities, None, ingest=ingest)
 
 
-def ingest_opportunities(
+async def ingest_opportunities(
     opportunities: list[dict[str, Any]],
     *,
-    client: Any | None = None,
-    graph: str | None = None,
+    ingest: KnowledgeIngest | None = None,
 ) -> dict[str, int]:
     """Map Twenty opportunity records → ``:Opportunity`` (+ company / contact links)."""
     entities: list[dict[str, Any]] = []
@@ -206,7 +231,7 @@ def ingest_opportunities(
                     "relationship": "pointOfContact",
                 }
             )
-    return ingest_entities(entities, relationships, client=client, graph=graph)
+    return await ingest_entities(entities, relationships, ingest=ingest)
 
 
 # --- response unwrap ---------------------------------------------------------
