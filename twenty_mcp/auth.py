@@ -1,17 +1,15 @@
 """CONCEPT:TW-OS.identity.twenty Identity credentials loader and session manager."""
 
+import logging
 from typing import Any
 
-from agent_utilities.base_utilities import get_logger
-from agent_utilities.core.config import setting
-from agent_utilities.core.transport_security import (
-    ResolvedTLSProfile,
-    resolve_configured_tls_profile,
-)
+from agent_connector_sdk.config import setting
+from agent_connector_sdk.tls.profile import ResolvedTLSProfile
+from agent_connector_sdk.tls.resolve import resolve_tls_profile
 
 from twenty_mcp.api_client import Api
 
-logger = get_logger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def get_client() -> Api:
@@ -20,7 +18,7 @@ def get_client() -> Api:
     token = setting("TWENTY_TOKEN", "")
     username = setting("TWENTY_MCP_USERNAME", "")
     password = setting("TWENTY_MCP_PASSWORD", "")
-    tls_profile = resolve_configured_tls_profile(
+    tls_profile = resolve_tls_profile(
         "twenty",
         profile_name=setting("TWENTY_TLS_PROFILE", None),
         profile_ref=setting("TWENTY_TLS_PROFILE_REF", None),
@@ -47,8 +45,9 @@ def get_graphql_client(
 ) -> Any:
     """Factory function to create the Twenty GraphQL client.
 
-    Supports OIDC delegation (when ``agent_utilities.mcp.delegated_auth`` is
-    available and delegation is enabled) and a fixed-token fallback.
+    Supports OIDC delegation (RFC 8693 token exchange via
+    ``agent_connector_sdk.auth.delegation``, when enabled) and a fixed-token
+    fallback.
 
     Twenty allows unauthenticated auth-flow mutations, so a missing token is
     NOT a hard failure — the GraphQL client is simply constructed without an
@@ -59,7 +58,7 @@ def get_graphql_client(
     )
     if token is None:
         token = setting("TWENTY_TOKEN", "")
-    profile = tls_profile or resolve_configured_tls_profile(
+    profile = tls_profile or resolve_tls_profile(
         "twenty",
         profile_name=setting("TWENTY_TLS_PROFILE", None),
         profile_ref=setting("TWENTY_TLS_PROFILE_REF", None),
@@ -68,32 +67,38 @@ def get_graphql_client(
     if not instance:
         instance = "http://localhost"
 
+    # --- Path 1: OIDC Delegation (RFC 8693 Token Exchange) ---
+    from agent_connector_sdk.auth.delegation import DelegationSettings
+
     from twenty_mcp.twenty_gql import GraphQL
 
-    # --- Path 1: OIDC Delegation (RFC 8693 Token Exchange) ---
-    try:
-        from agent_utilities.mcp.delegated_auth import (
-            get_delegated_token,
-            get_user_identity,
-            is_delegation_enabled,
-        )
-
-        delegation_enabled = is_delegation_enabled(config)
-    except Exception:
-        delegation_enabled = False
+    delegation_enabled = (
+        bool(config.get("enable_delegation", False))
+        if config is not None
+        else DelegationSettings.from_settings().enabled
+    )
 
     if delegation_enabled:
         try:
-            delegated_token = get_delegated_token(
-                config=config,
-                audience=(config or {}).get("audience", instance),
-                scopes=(config or {}).get("delegated_scopes", "api"),
+            import httpx
+            from agent_connector_sdk.auth.delegation import (
+                current_user_token,
+                exchange_token,
             )
-            get_user_identity()
+            from agent_connector_sdk.exceptions import LoginRequiredError
+
+            settings = DelegationSettings.from_settings()
+            subject_token = current_user_token()
+            if not subject_token:
+                raise LoginRequiredError("no verified caller token to delegate")
+            with httpx.Client(timeout=30) as http_client:
+                access_token = exchange_token(
+                    settings, subject_token=subject_token, http_client=http_client
+                )
             logger.info("Using OIDC delegated token for Twenty GraphQL API")
             return GraphQL(
                 url=instance,
-                token=delegated_token,
+                token=access_token.value,
                 tls_profile=profile,
             )
         except Exception as e:
