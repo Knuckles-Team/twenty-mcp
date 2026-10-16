@@ -9,7 +9,6 @@ __all__: list[str] = []
 
 CORE_MODULES = ["twenty_mcp.api_client"]
 OPTIONAL_MODULES = {
-    "twenty_mcp.agent_server": "agent",
     "twenty_mcp.mcp_server": "mcp",
 }
 
