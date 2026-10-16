@@ -1,6 +1,6 @@
 # twenty-mcp
 
-Twenty CRM **REST/GraphQL API + MCP Server** for the agent-utilities ecosystem —
+Twenty CRM **REST/GraphQL API + MCP Server** for the agent-connector-sdk ecosystem —
 a typed, deterministic tool surface and Pydantic-AI agent for the Twenty
 customer-relationship-management platform.
 
