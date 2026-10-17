@@ -65,7 +65,6 @@ When query strings or parameters are provided, an LLM-free **Knowledge Graph res
 
 > **Install the connector-focused `[mcp]` extra.** Examples use `twenty-mcp[mcp]` to add
 > FastMCP / FastAPI through `agent-connector-sdk`; the required Agent Connector SDK core
-> still carries `epistemic-graph[full]`. The `[agent]` extra also
 > enables model orchestration.
 
 Pick the extra that matches what the operator want to run:
@@ -73,7 +72,6 @@ Pick the extra that matches what the operator want to run:
 | Extra | Installs | Use when |
 |-------|----------|----------|
 | `twenty-mcp[mcp]` | Connector-focused MCP server (`agent-connector-sdk` — FastMCP/FastAPI + `epistemic-graph[full]`) | The operator only run the **MCP server** (smallest install / image) |
-| `twenty-mcp[agent]` | Agent runtime (`agent-connector-sdk` — model orchestration + `epistemic-graph[full]`) | The operator run the **integrated agent** |
 | `twenty-mcp[all]` | Everything (`mcp` + `agent` + `logfire` + `gql`) | Development / both surfaces |
 
 ```bash
@@ -81,31 +79,26 @@ Pick the extra that matches what the operator want to run:
 uv pip install "twenty-mcp[mcp]"
 
 # Agent runtime (adds model orchestration to the shared graph engine)
-uv pip install "twenty-mcp[agent]"
 
 # Everything (development)
 uv pip install "twenty-mcp[all]"      # or: python -m pip install "twenty-mcp[all]"
 ```
 
-### Container images (`:mcp` vs `:agent`)
+### Container images (`:mcp`)
 
-One multi-stage `docker/Dockerfile` builds two right-sized images, selected by `--target`:
+One multi-stage `docker/Dockerfile` builds the MCP-only image (`--target mcp`):
 
 | Image tag | Build target | Contents | Entrypoint |
 |-----------|--------------|----------|------------|
 | `example/twenty-mcp:mcp` | `--target mcp` | `twenty-mcp[mcp]` — **connector-focused**, includes `epistemic-graph[full]`; no model-orchestration stack | `twenty-mcp` |
-| `example/twenty-mcp@sha256:<digest>` | `--target agent` (default) | `twenty-mcp[agent]` — **agent runtime**, model orchestration + `epistemic-graph[full]` | `twenty-agent` |
 
 ```bash
 docker build --target mcp   -t example/twenty-mcp:mcp    docker/   # connector-focused MCP server
-docker build --target agent -t example/twenty-mcp:agent-local docker/   # agent runtime
 ```
 
 ### Knowledge-graph database (`epistemic-graph`)
 
-Both `[mcp]` and `[agent]` carry the **epistemic-graph** engine through the required
 Agent Connector SDK core dependency (`epistemic-graph[full]`). The `[mcp]` extra keeps
-the server connector-focused; `[agent]` also enables model orchestration. Local
 deployments can use the bundled engine. For production or shared state, run
 **epistemic-graph as a dedicated database service** and configure the runtime to use it.
 Deployment recipes (single-node + Raft HA), connection configuration, and architecture
