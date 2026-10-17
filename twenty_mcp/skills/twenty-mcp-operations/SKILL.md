@@ -2,12 +2,12 @@
 name: twenty-mcp-operations
 skill_type: skill
 description: >-
-  Operate twenty-mcp through its governed MCP and GraphOS capabilities, including twenty contacts, twenty kg sync, twenty pipeline. Use when a request requires this provider's read, change, automation, ingestion, troubleshooting, or evidence workflows.
+  Operate twenty-mcp through its governed MCP and Arbora capabilities, including twenty contacts, twenty kg sync, twenty pipeline. Use when a request requires this provider's read, change, automation, ingestion, troubleshooting, or evidence workflows.
 ---
 
 # Twenty Mcp Operations
 
-Use the provider's governed MCP tools through GraphOS delegation.
+Use the provider's governed MCP tools through Arbora delegation.
 
 ## Workflow
 
