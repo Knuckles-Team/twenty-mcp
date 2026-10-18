@@ -138,8 +138,8 @@ schema_mappings:
 sync:
 - preset: twenty-companies
   server: twenty-mcp
-  tool: twenty_mcp_crm
-  action: get_companies
+  tool: twenty_get_companies
+  action: null
   records_path: data.companies
   id_field: id
   title_field: name
@@ -147,11 +147,11 @@ sync:
   updated_field: updatedAt
   pagination: null
   doc_type: crm-company
-  tool_schema_sha256: 6a16237312c6d8f754bbce0342d089c23155b1e0abe65dd925bf2c76a2be1ee4
+  tool_schema_sha256: fa2b590bddddcc483fcb1c5b78faf8f9fc751dec34f9da1bdf5e576a39e149c5
   raw:
     server: twenty-mcp
-    tool: twenty_mcp_crm
-    action: get_companies
+    tool: twenty_get_companies
+    params_style: args
     records_path: data.companies
     id_field: id
     title_field: name
@@ -160,8 +160,8 @@ sync:
     doc_type: crm-company
 - preset: twenty-opportunities
   server: twenty-mcp
-  tool: twenty_mcp_crm
-  action: get_opportunities
+  tool: twenty_get_opportunities
+  action: null
   records_path: data.opportunities
   id_field: id
   title_field: name
@@ -169,11 +169,11 @@ sync:
   updated_field: updatedAt
   pagination: null
   doc_type: crm-opportunity
-  tool_schema_sha256: 6a16237312c6d8f754bbce0342d089c23155b1e0abe65dd925bf2c76a2be1ee4
+  tool_schema_sha256: e9d9e79f83e08dd8ecaf91e735095c599365624edb714507019412050ad6c0ae
   raw:
     server: twenty-mcp
-    tool: twenty_mcp_crm
-    action: get_opportunities
+    tool: twenty_get_opportunities
+    params_style: args
     records_path: data.opportunities
     id_field: id
     title_field: name
@@ -182,8 +182,8 @@ sync:
     doc_type: crm-opportunity
 - preset: twenty-people
   server: twenty-mcp
-  tool: twenty_mcp_crm
-  action: get_people
+  tool: twenty_get_people
+  action: null
   records_path: data.people
   id_field: id
   title_field: name.firstName
@@ -191,11 +191,11 @@ sync:
   updated_field: updatedAt
   pagination: null
   doc_type: crm-contact
-  tool_schema_sha256: 6a16237312c6d8f754bbce0342d089c23155b1e0abe65dd925bf2c76a2be1ee4
+  tool_schema_sha256: fa8206339f4364ab5a5fac1c76806091cffce7bb55f500ad91793993faa7c829
   raw:
     server: twenty-mcp
-    tool: twenty_mcp_crm
-    action: get_people
+    tool: twenty_get_people
+    params_style: args
     records_path: data.people
     id_field: id
     title_field: name.firstName
