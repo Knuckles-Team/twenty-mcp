@@ -28,7 +28,7 @@ class _FakeTransport:
     def __init__(self) -> None:
         self.requests: list[Any] = []
 
-    async def source_status(self, connector: str, stream: str) -> Any:
+    async def source_status(self, connector: str, stream: str) -> Any:  # noqa: V107
         return SimpleNamespace(accepted_checkpoint=None)
 
     async def submit(self, request: Any) -> Any:
@@ -62,8 +62,10 @@ async def test_ingest_entities_writes_nodes_and_edges(ingest):
     )
     assert res == {"nodes": 2, "edges": 1}
     assert {r.record_id for r in transport.requests[0].records} == {"a", "b"}
-    assert transport.requests[0].relationships[0].relation_reference.endswith(
-        "/relations/worksAt"
+    assert (
+        transport.requests[0]
+        .relationships[0]
+        .relation_reference.endswith("/relations/worksAt")
     )
 
 
@@ -142,11 +144,23 @@ async def test_ingest_opportunities_maps_amount_and_links(ingest):
     assert record.payload["currencyCode"] == "USD"
     assert record.payload["stage"] == "PROPOSAL"
     rel_pairs = {
-        (r.source.record_id, r.target.record_id, r.relation_reference.rsplit("/", 1)[-1])
+        (
+            r.source.record_id,
+            r.target.record_id,
+            r.relation_reference.rsplit("/", 1)[-1],
+        )
         for r in transport.requests[0].relationships
     }
-    assert ("twenty:opportunity:op-3", "twenty:company:co-9", "opportunityFor") in rel_pairs
-    assert ("twenty:opportunity:op-3", "twenty:person:p-1", "pointOfContact") in rel_pairs
+    assert (
+        "twenty:opportunity:op-3",
+        "twenty:company:co-9",
+        "opportunityFor",
+    ) in rel_pairs
+    assert (
+        "twenty:opportunity:op-3",
+        "twenty:person:p-1",
+        "pointOfContact",
+    ) in rel_pairs
 
 
 def test_extract_records_unwraps_twenty_response():
