@@ -63,7 +63,6 @@ Store the real remote URL, outbound identity reference, and TLS-profile referenc
 <!-- END GENERATED: deployment-options -->
 
 This page covers running `twenty-mcp` as a long-lived service: the transports, the
-optional A2A agent server, a Docker Compose stack, putting it behind a Caddy reverse
 proxy, and giving it a DNS name with Technitium. To provision the **Twenty CRM
 platform** it connects to, see [Backing Platform](platform.md).
 
@@ -169,7 +168,6 @@ docker compose -f docker/mcp.compose.yml logs -f
 ## Agent server (A2A)
 
 The A2A agent is published as the `twenty-agent` console script and
-[`docker/agent.compose.yml`](https://github.com/Knuckles-Team/twenty-mcp/blob/main/docker/agent.compose.yml),
 which provisions the MCP server **and** the agent together. The agent reaches the MCP
 server over `MCP_URL` and publishes its own HTTP API (and optional web UI) on `:9000`:
 
@@ -185,7 +183,6 @@ services:
       - PORT=8000
     ports: ["8000:8000"]
 
-  twenty-agent:
     image: example/twenty-mcp@sha256:<digest>
     depends_on: [twenty-mcp]
     command: ["twenty-agent"]
@@ -201,7 +198,6 @@ services:
 ```
 
 ```bash
-docker compose -f docker/agent.compose.yml up -d
 curl -s http://localhost:9000/health        # agent health
 ```
 

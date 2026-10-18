@@ -137,6 +137,6 @@
     rdfs:label "Twenty CRM Ontology" ;
     rdfs:comment """Twenty customer-relationship model — people (contacts), companies
     (accounts), and the opportunities/deals that link them, with their pipeline stages,
-    notes and tasks — federated into the agent-utilities knowledge-graph hub. Reuses the
+    notes and tasks — federated into the agent-connector-sdk knowledge-graph hub. Reuses the
     shared :Person class for contacts.""" ;
     owl:imports <http://knuckles.team/kg/enterprise> .

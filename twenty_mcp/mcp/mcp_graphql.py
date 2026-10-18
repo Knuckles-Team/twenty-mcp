@@ -72,10 +72,8 @@ def register_graphql_tools(mcp: FastMCP):
         * ``{"source": "metadata-api", "metadata": <result>}``
         * ``{"error": <message>}`` on total failure.
         """
-        from agent_utilities.mcp.context_helpers import (
-            ctx_graphql_get_type_details,
-            ctx_graphql_list_types,
-        )
+        from agent_connector_sdk.mcp.graphql import ctx_graphql_get_type_details
+        from agent_connector_sdk.mcp.graphql import ctx_graphql_list_types
 
         if ctx:
             await ctx.info("Retrieving Twenty metadata (meta-model)...")
@@ -171,7 +169,7 @@ def _introspection_disabled(result: Any) -> bool:
     if result is None:
         return True
     if isinstance(result, dict):
-        if result.get("error"):
+        if result.get("error") or result.get("status") == "error":
             return True
         # GraphQL spec error payload (e.g. {"errors": [...], "data": null}).
         if result.get("errors"):

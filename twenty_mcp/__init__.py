@@ -9,7 +9,6 @@ __all__: list[str] = []
 
 CORE_MODULES = ["twenty_mcp.api_client"]
 OPTIONAL_MODULES = {
-    "twenty_mcp.agent_server": "agent",
     "twenty_mcp.mcp_server": "mcp",
 }
 
@@ -42,9 +41,6 @@ def __getattr__(name: str) -> Any:
     if name == "_MCP_AVAILABLE":
         mcp_key = next((k for k in OPTIONAL_MODULES if "mcp_server" in k), None)
         return _import_module_safely(mcp_key) is not None if mcp_key else False
-    if name == "_AGENT_AVAILABLE":
-        agent_key = next((k for k in OPTIONAL_MODULES if "agent_server" in k), None)
-        return _import_module_safely(agent_key) is not None if agent_key else False
 
     for module_name in OPTIONAL_MODULES:
         if module_name not in _loaded_optional_modules:
