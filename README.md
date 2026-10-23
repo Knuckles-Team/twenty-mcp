@@ -72,7 +72,7 @@ Pick the extra that matches what the operator want to run:
 | Extra | Installs | Use when |
 |-------|----------|----------|
 | `twenty-mcp[mcp]` | Connector-focused MCP server (`agent-connector-sdk` — FastMCP/FastAPI + `epistemic-graph[full]`) | The operator only run the **MCP server** (smallest install / image) |
-| `twenty-mcp[all]` | Everything (`mcp` + `agent` + `logfire` + `gql`) | Development / both surfaces |
+| `twenty-mcp[all]` | Everything (`mcp` + `agent` + `logfire`) | Development / both surfaces |
 
 ```bash
 # Connector-focused MCP server (includes the shared graph engine)

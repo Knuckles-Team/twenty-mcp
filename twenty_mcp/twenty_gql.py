@@ -27,23 +27,7 @@ from typing import Any
 from agent_connector_sdk.exceptions import MissingParameterError, ParameterError
 from agent_connector_sdk.tls.profile import ResolvedTLSProfile
 from agent_connector_sdk.tls.resolve import resolve_tls_profile
-from gql import Client, gql
-from gql.transport.requests import RequestsHTTPTransport
-
-
-class _ProfiledRequestsHTTPTransport(RequestsHTTPTransport):
-    """Apply one mandatory-verification profile to every GraphQL request."""
-
-    def __init__(self, *, tls_profile: ResolvedTLSProfile, **kwargs: Any) -> None:
-        request_kwargs = tls_profile.requests_kwargs()
-        verify = request_kwargs.pop("verify")
-        super().__init__(verify=verify, **request_kwargs, **kwargs)
-        self.tls_profile = tls_profile
-
-    def connect(self) -> None:
-        super().connect()
-        if self.session is not None:
-            self.tls_profile.configure_requests_session(self.session)
+from agent_connector_sdk.transports.graphql import GraphQLAuth, GraphQLClient
 
 
 class GraphQL:
@@ -89,22 +73,22 @@ class GraphQL:
             headers["Authorization"] = f"Bearer {token}"
         self.headers = headers
 
-        self.transport = _ProfiledRequestsHTTPTransport(
-            url=self.endpoint,
-            headers=headers,
-            tls_profile=self.tls_profile,
-        )
-        self.core_transport = _ProfiledRequestsHTTPTransport(
-            url=self.core_endpoint,
-            headers=headers,
-            tls_profile=self.tls_profile,
-        )
+        self._build_clients()
+
+    def _build_clients(self) -> None:
+        """Build the object (``/graphql``) and core (``/metadata``) clients."""
         # Twenty disables GraphQL introspection; never fetch the schema.
-        self.client = Client(
-            transport=self.transport, fetch_schema_from_transport=False
-        )
-        self.core_client = Client(
-            transport=self.core_transport, fetch_schema_from_transport=False
+        auth = GraphQLAuth.bearer(self.token) if self.token else None
+        self.client = self._new_client(self.endpoint, auth)
+        self.core_client = self._new_client(self.core_endpoint, auth)
+
+    def _new_client(self, endpoint: str, auth: GraphQLAuth | None) -> GraphQLClient:
+        return GraphQLClient(
+            endpoint,
+            auth=auth,
+            headers={"Origin": self.origin},
+            tls_profile=self.tls_profile,
+            fetch_schema=False,
         )
 
     def execute_gql(
@@ -130,15 +114,9 @@ class GraphQL:
             ParameterError: If the query execution fails.
         """
         client = self.core_client if core else self.client
-        try:
-            query = gql(query_str)
-            result = client.execute(
-                query, variable_values=variables, operation_name=operation_name
-            )
-            return result
-        except Exception as e:
-            logging.error(f"GraphQL execution failed: {type(e).__name__}")
-            raise ParameterError(f"Query execution failed: {type(e).__name__}") from e
+        return client.execute(
+            query_str, variables=variables, operation_name=operation_name
+        )
 
     # --- Auth / API key mutations (route through the CORE /metadata schema) ---
 
@@ -398,17 +376,14 @@ class GraphQL:
         }
 
     def _set_token(self, token: str) -> None:
-        """Attach a Bearer token to both clients' transports (in-place).
+        """Attach a Bearer token by rebuilding both shared clients.
 
         Used by :meth:`provision_api_key` to authenticate the authenticated
         steps once a login exchange has yielded an access token.
         """
         self.token = token
         self.headers["Authorization"] = f"Bearer {token}"
-        for transport in (self.transport, self.core_transport):
-            existing = getattr(transport, "headers", None) or {}
-            existing["Authorization"] = f"Bearer {token}"
-            transport.headers = existing
+        self._build_clients()
 
     # --- Generic record reader ---
 

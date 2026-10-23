@@ -12,4 +12,4 @@ Read the existing specs first. Extend the spec that owns the behavior. Create a 
 
 ## Local specifications
 
-This repository has no local spec yet.
+[`CONN-TWENTY-MCP`](twenty-mcp/spec.md) — The Twenty connector sends GraphQL calls through the SDK shared client.

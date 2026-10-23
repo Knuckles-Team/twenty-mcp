@@ -11,7 +11,7 @@ overrides = [{ name = "fastmcp-slim", extras = ["client", "server"], specifier =
 
 [[package]]
 name = "agent-connector-sdk"
-version = "0.3.0"
+version = "0.3.13"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
@@ -23,11 +23,16 @@ dependencies = [
     { name = "pydantic" },
     { name = "pyyaml" },
 ]
+sdist = { url = "https://files.pythonhosted.org/packages/e4/42/30dcdefd5c4a9c423d7825c3346fdc88ea97b92da12910670930da87b634/agent_connector_sdk-0.3.13.tar.gz", hash = "sha256:148c80239b464cbf8625ad360a0fde17cbc71801b3f899acbb9146bdee7bcb3e", size = 752692, upload-time = "2026-10-23T01:24:38.664Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/43/67/0bd17fcf77c53560aeda1a7801920e6783a8f2575080da72158e14833657/agent_connector_sdk-0.3.0-py3-none-any.whl", hash = "sha256:4bbbf66a04bff9b80dfa48d3cbb1c8697ebc78b562f1b8e3a859f9336943c18c", size = 714783, upload-time = "2026-10-18T05:05:24.058Z" },
+    { url = "https://files.pythonhosted.org/packages/6a/c7/f92459a9104f8156dced7d984ee4c4252fc1337edd15f0d7eece57a89f69/agent_connector_sdk-0.3.13-py3-none-any.whl", hash = "sha256:dbc373ea4faeb148042d71665f54a743c80a86be721ba87b8db3fbf0007d810d", size = 748678, upload-time = "2026-10-23T01:24:39.905Z" },
 ]
 
 [package.optional-dependencies]
+graphql = [
+    { name = "gql", extra = ["requests"] },
+    { name = "graphql-core" },
+]
 mcp = [
     { name = "fastmcp" },
     { name = "mcp" },
@@ -1787,21 +1792,16 @@ name = "twenty-mcp"
 version = "2.3.1"
 source = { editable = "." }
 dependencies = [
-    { name = "agent-connector-sdk", extra = ["mcp"] },
-    { name = "gql", extra = ["requests"] },
+    { name = "agent-connector-sdk", extra = ["graphql", "mcp"] },
     { name = "requests" },
 ]
 
 [package.optional-dependencies]
 all = [
-    { name = "agent-connector-sdk", extra = ["mcp"] },
-    { name = "gql", extra = ["requests"] },
-]
-gql = [
-    { name = "gql", extra = ["requests"] },
+    { name = "agent-connector-sdk", extra = ["graphql", "mcp"] },
 ]
 mcp = [
-    { name = "agent-connector-sdk", extra = ["mcp"] },
+    { name = "agent-connector-sdk", extra = ["graphql", "mcp"] },
 ]
 test = [
     { name = "pytest" },
@@ -1817,19 +1817,16 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "agent-connector-sdk", extras = ["mcp"], specifier = ">=0.3.0,<1.0.0" },
-    { name = "agent-connector-sdk", extras = ["mcp"], marker = "extra == 'all'", specifier = ">=0.3.0,<1.0.0" },
-    { name = "agent-connector-sdk", extras = ["mcp"], marker = "extra == 'mcp'", specifier = ">=0.3.0,<1.0.0" },
-    { name = "gql", extras = ["requests"], specifier = ">=4.4.0" },
-    { name = "gql", extras = ["requests"], marker = "extra == 'all'", specifier = ">=4.4.0" },
-    { name = "gql", extras = ["requests"], marker = "extra == 'gql'", specifier = ">=4.4.0" },
+    { name = "agent-connector-sdk", extras = ["mcp", "graphql"], specifier = ">=0.3.13,<1.0.0" },
+    { name = "agent-connector-sdk", extras = ["mcp", "graphql"], marker = "extra == 'all'", specifier = ">=0.3.13,<1.0.0" },
+    { name = "agent-connector-sdk", extras = ["mcp", "graphql"], marker = "extra == 'mcp'", specifier = ">=0.3.13,<1.0.0" },
     { name = "pytest", marker = "extra == 'test'", specifier = ">=9.1.1" },
     { name = "pytest-asyncio", marker = "extra == 'test'", specifier = ">=1.4.0" },
     { name = "pytest-cov", marker = "extra == 'test'", specifier = ">=7.1.0" },
     { name = "pytest-xdist", marker = "extra == 'test'", specifier = ">=3.8.0" },
     { name = "requests", specifier = ">=2.34.2" },
 ]
-provides-extras = ["mcp", "gql", "all", "test"]
+provides-extras = ["mcp", "all", "test"]
 
 [package.metadata.requires-dev]
 dev = [{ name = "pytest-timeout", specifier = ">=2.4.0" }]
