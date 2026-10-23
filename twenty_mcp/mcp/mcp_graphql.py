@@ -72,8 +72,10 @@ def register_graphql_tools(mcp: FastMCP):
         * ``{"source": "metadata-api", "metadata": <result>}``
         * ``{"error": <message>}`` on total failure.
         """
-        from agent_connector_sdk.mcp.graphql import ctx_graphql_get_type_details
-        from agent_connector_sdk.mcp.graphql import ctx_graphql_list_types
+        from agent_connector_sdk.mcp.graphql import (
+            ctx_graphql_get_type_details,
+            ctx_graphql_list_types,
+        )
 
         if ctx:
             await ctx.info("Retrieving Twenty metadata (meta-model)...")

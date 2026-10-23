@@ -4,26 +4,29 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 from agent_connector_sdk.exceptions import MissingParameterError, ParameterError
+from agent_connector_sdk.transports.graphql import GraphQLExecutionError
 
 from twenty_mcp.twenty_gql import GraphQL
 
 
 @pytest.fixture
 def mock_gql_clients():
-    """Patch the gql Client so no network is used; capture execute() calls.
+    """Patch the shared GraphQLClient so no network is used; capture execute() calls.
 
     Twenty uses TWO clients: ``client`` (object schema, ``/graphql``) and
     ``core_client`` (auth/system schema, ``/metadata``). The patched ``Client``
     constructor returns a distinct mock per call so tests can assert which
     endpoint a method routed through.
     """
-    with patch("twenty_mcp.twenty_gql.Client") as mock_client_cls:
+    with patch("twenty_mcp.twenty_gql.GraphQLClient") as mock_client_cls:
         object_client = MagicMock(name="object_client")
         object_client.execute.return_value = {"ok": True}
         core_client = MagicMock(name="core_client")
         core_client.execute.return_value = {"ok": True}
-        # __init__ builds the object client first, then the core client.
-        mock_client_cls.side_effect = [object_client, core_client]
+        # Route by endpoint so a rebuild (token change) reuses the same mocks.
+        mock_client_cls.side_effect = lambda endpoint, **_: (
+            object_client if endpoint.endswith("/graphql") else core_client
+        )
         yield {"object": object_client, "core": core_client}
 
 
@@ -31,13 +34,6 @@ def mock_gql_clients():
 @pytest.fixture
 def mock_gql_client(mock_gql_clients):
     yield mock_gql_clients["object"]
-
-
-@pytest.fixture(autouse=True)
-def mock_gql_parser():
-    """Avoid parsing/validating the GraphQL document (no schema available)."""
-    with patch("twenty_mcp.twenty_gql.gql", lambda q: q):
-        yield
 
 
 def test_graphql_init_requires_url():
@@ -69,7 +65,7 @@ def test_execute_gql_happy_path(mock_gql_clients):
     assert result == {"ok": True}
     # default routes to the OBJECT client
     _, kwargs = mock_gql_clients["object"].execute.call_args
-    assert kwargs["variable_values"] == {"a": 1}
+    assert kwargs["variables"] == {"a": 1}
     mock_gql_clients["core"].execute.assert_not_called()
 
 
@@ -82,7 +78,9 @@ def test_execute_gql_core_routes_to_core_client(mock_gql_clients):
 
 def test_execute_gql_error_path(mock_gql_clients):
     client = GraphQL(url="http://twenty.local", token="abc")
-    mock_gql_clients["object"].execute.side_effect = Exception("boom")
+    mock_gql_clients["object"].execute.side_effect = GraphQLExecutionError(
+        Exception("boom")
+    )
     with pytest.raises(ParameterError, match="Query execution failed: Exception"):
         client.execute_gql("query { foo }")
 
@@ -101,7 +99,7 @@ def test_create_api_key_builds_operation_on_core(mock_gql_clients):
     assert "$roleId: UUID!" in query_doc
     assert "$name: String!" in query_doc
     assert "$expiresAt: String!" in query_doc
-    assert kwargs["variable_values"] == {
+    assert kwargs["variables"] == {
         "name": "ci",
         "expiresAt": "2030-01-01",
         "roleId": "role-uuid",
@@ -119,7 +117,7 @@ def test_generate_api_key_token_builds_operation_on_core(mock_gql_clients):
     )
     assert "$apiKeyId: UUID!" in query_doc
     assert "$expiresAt: String!" in query_doc
-    assert kwargs["variable_values"] == {
+    assert kwargs["variables"] == {
         "apiKeyId": "k1",
         "expiresAt": "2030-01-01",
     }
@@ -145,7 +143,7 @@ def test_get_login_token_from_credentials_includes_origin_on_core(mock_gql_clien
         in query_doc
     )
     assert "$origin: String!" in query_doc
-    assert kwargs["variable_values"] == {
+    assert kwargs["variables"] == {
         "email": "a@b.c",
         "password": "pw",
         "origin": "http://twenty.local",
@@ -161,7 +159,7 @@ def test_get_auth_tokens_from_login_token_includes_origin_on_core(mock_gql_clien
         "getAuthTokensFromLoginToken(loginToken: $loginToken, origin: $origin)"
         in args[0]
     )
-    assert kwargs["variable_values"] == {
+    assert kwargs["variables"] == {
         "loginToken": "lt",
         "origin": "http://twenty.local",
     }
@@ -173,7 +171,7 @@ def test_get_authorization_url_for_sso_on_core(mock_gql_clients):
     mock_gql_clients["object"].execute.assert_not_called()
     args, kwargs = mock_gql_clients["core"].execute.call_args
     assert "getAuthorizationUrlForSSO(input: { identityProviderId: $id })" in args[0]
-    assert kwargs["variable_values"] == {"id": "idp1"}
+    assert kwargs["variables"] == {"id": "idp1"}
 
 
 def test_find_many_builds_dynamic_query_on_object(mock_gql_clients):
@@ -194,7 +192,7 @@ def test_find_many_builds_dynamic_query_on_object(mock_gql_clients):
     assert "id name" in query_doc
     assert "edges" in query_doc
     assert "totalCount" in query_doc
-    assert kwargs["variable_values"] == {
+    assert kwargs["variables"] == {
         "first": 10,
         "filter": {"name": {"eq": "Bob"}},
         "orderBy": [{"name": "AscNullsFirst"}],
@@ -207,7 +205,7 @@ def test_find_many_minimal_variables(mock_gql_clients):
     client.find_many("companies")
     _, kwargs = mock_gql_clients["object"].execute.call_args
     # only `first` should be present when no optional args supplied
-    assert kwargs["variable_values"] == {"first": 60}
+    assert kwargs["variables"] == {"first": 60}
 
 
 def test_provision_api_key_chains_full_flow(mock_gql_clients):
@@ -293,9 +291,40 @@ def test_get_graphql_client_factory_without_token(monkeypatch):
     """The auth factory should construct without a token (Twenty allows it)."""
     monkeypatch.delenv("TWENTY_TOKEN", raising=False)
     monkeypatch.setenv("TWENTY_URL", "http://twenty.local")
-    with patch("twenty_mcp.twenty_gql.Client", MagicMock()):
+    with patch("twenty_mcp.twenty_gql.GraphQLClient", MagicMock()):
         from twenty_mcp.auth import get_graphql_client
 
         client = get_graphql_client()
         assert isinstance(client, GraphQL)
         assert "Authorization" not in client.headers
+
+
+@pytest.mark.spec("CONN-TWENTY-MCP-R001")
+@pytest.mark.parametrize("token", ["abc", None])
+def test_shared_client_two_endpoints_origin_auth_and_routing(token):
+    """Two shared clients: Origin on both, Authorization only with a token."""
+    with patch("twenty_mcp.twenty_gql.GraphQLClient") as cls:
+        object_client, core_client = MagicMock(), MagicMock()
+        object_client.execute.return_value = {"o": 1}
+        core_client.execute.return_value = {"c": 1}
+        cls.side_effect = [object_client, core_client]
+        gql_client = GraphQL(url="http://twenty.local/", token=token)
+
+        assert [c.args[0] for c in cls.call_args_list] == [
+            "http://twenty.local/graphql",
+            "http://twenty.local/metadata",
+        ]
+        for call in cls.call_args_list:
+            assert call.kwargs["headers"] == {"Origin": "http://twenty.local"}
+            assert call.kwargs["fetch_schema"] is False
+            assert call.kwargs["tls_profile"] is gql_client.tls_profile
+            auth = call.kwargs["auth"]
+            if token:
+                assert auth.headers() == {"Authorization": "Bearer abc"}
+            else:
+                assert auth is None
+
+        assert gql_client.execute_gql("query { a }") == {"o": 1}
+        assert gql_client.execute_gql("query { b }", core=True) == {"c": 1}
+        object_client.execute.assert_called_once()
+        core_client.execute.assert_called_once()
