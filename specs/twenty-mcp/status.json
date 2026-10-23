@@ -12,9 +12,9 @@
       "title": "Shared GraphQL client",
       "delivery_state": "VERIFIED",
       "landed_in": [
-        "733d605a5ad4",
-        "b9b67ddb079e",
-        "e572989ee958"
+        "6d8013a77e30",
+        "78ea6bb63be3",
+        "c477c0afb35d"
       ],
       "verified_by": [
         "tests/test_twenty_gql.py:302"
