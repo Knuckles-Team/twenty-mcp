@@ -1812,6 +1812,7 @@ test = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "pytest-asyncio" },
     { name = "pytest-timeout" },
 ]
 
@@ -1829,7 +1830,10 @@ requires-dist = [
 provides-extras = ["mcp", "all", "test"]
 
 [package.metadata.requires-dev]
-dev = [{ name = "pytest-timeout", specifier = ">=2.4.0" }]
+dev = [
+    { name = "pytest-asyncio", specifier = ">=1.4.0" },
+    { name = "pytest-timeout", specifier = ">=2.4.0" },
+]
 
 [[package]]
 name = "typing-extensions"
