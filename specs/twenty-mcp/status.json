@@ -1,0 +1,23 @@
+{
+  "schema_version": 2,
+  "spec_id": "CONN-TWENTY-MCP",
+  "owner_repo": "twenty-mcp",
+  "delivery_state": "VERIFIED",
+  "requirement_ids": [
+    "CONN-TWENTY-MCP-R001"
+  ],
+  "requirements": [
+    {
+      "id": "CONN-TWENTY-MCP-R001",
+      "title": "Shared GraphQL client",
+      "delivery_state": "VERIFIED",
+      "landed_in": [
+        "733d605a5ad4",
+        "e572989ee958"
+      ],
+      "verified_by": [
+        "tests/test_twenty_gql.py:302"
+      ]
+    }
+  ]
+}
