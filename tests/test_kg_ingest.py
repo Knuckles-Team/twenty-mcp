@@ -63,9 +63,7 @@ async def test_ingest_entities_writes_nodes_and_edges(ingest):
     assert res == {"nodes": 2, "edges": 1}
     assert {r.record_id for r in transport.requests[0].records} == {"a", "b"}
     assert (
-        transport.requests[0]
-        .relationships[0]
-        .relation_reference.endswith("/relations/worksAt")
+        transport.requests[0].relationships[0].relation_reference.endswith("/worksAt")
     )
 
 

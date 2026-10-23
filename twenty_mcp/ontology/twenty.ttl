@@ -16,9 +16,8 @@
 
 # --- classes (owl:Class) ---
 
-:Company a owl:Class ;
-    rdfs:label "Company" ;
-    rdfs:comment "A CRM company / account record in Twenty (twenty_mcp_crm get_companies)." .
+:Company a owl:Class .
+
 
 :Opportunity a owl:Class ;
     rdfs:label "Opportunity" ;
@@ -138,5 +137,4 @@
     rdfs:comment """Twenty customer-relationship model — people (contacts), companies
     (accounts), and the opportunities/deals that link them, with their pipeline stages,
     notes and tasks — federated into the agent-connector-sdk knowledge-graph hub. Reuses the
-    shared :Person class for contacts.""" ;
-    owl:imports <http://knuckles.team/kg/enterprise> .
+    shared :Person class for contacts.""" .
