@@ -176,7 +176,7 @@ def test_extract_records_unwraps_twenty_response():
 @pytest.mark.asyncio
 async def test_retired_structural_alias_is_rejected(ingest):
     service, _ = ingest
-    with pytest.raises(IngestError, match="id and a node_type"):
+    with pytest.raises(IngestError, match="missing required field 'node_type'"):
         await STREAM.entities([{"id": "a", "type": "Person"}], ingest=service)
 
 
