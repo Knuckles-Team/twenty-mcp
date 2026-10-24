@@ -12,61 +12,15 @@ import logging
 from typing import Any
 
 from agent_connector_sdk.ingest import (
-    ChangeSet,
-    Entity,
-    IngestBinding,
-    IngestError,
     KnowledgeIngest,
-    Relationship,
-    current_ingest,
+    SourceStream,
 )
 
 logger = logging.getLogger("twenty_mcp.kg")
 
 _SOURCE = "twenty-mcp"
-_DOMAIN = "twenty"
 
-_BINDING = IngestBinding(connector="twenty-mcp", stream=_DOMAIN)
-
-
-def _to_entity(record: dict[str, Any]) -> Entity:
-    return Entity(
-        id=record.get("id"),
-        node_type=record.get("node_type"),
-        properties={k: v for k, v in record.items() if k not in ("id", "node_type")},
-    )
-
-
-def _to_relationship(record: dict[str, Any]) -> Relationship:
-    props = {
-        k: v
-        for k, v in record.items()
-        if k not in ("source", "target", "relationship")
-    }
-    return Relationship(
-        source=record["source"],
-        target=record["target"],
-        relationship=record["relationship"],
-        properties=props or None,
-    )
-
-
-async def ingest_entities(
-    entities: list[dict[str, Any]],
-    relationships: list[dict[str, Any]] | None = None,
-    *,
-    ingest: KnowledgeIngest | None = None,
-) -> dict[str, int]:
-    """Write canonical typed nodes and relationships in one native transaction."""
-    if not entities:
-        raise IngestError("ingest_entities needs at least one entity")
-    change_set = ChangeSet(
-        entities=tuple(_to_entity(e) for e in entities),
-        relationships=tuple(_to_relationship(r) for r in relationships or ()),
-    )
-    service = ingest or current_ingest()
-    receipt = await service.submit(_BINDING, change_set)
-    return {"nodes": receipt.affected_count, "edges": receipt.relationship_count}
+STREAM = SourceStream.for_package(__package__.split(".")[0], "twenty")
 
 
 # --- record → node field extraction helpers ---------------------------------
@@ -157,7 +111,7 @@ async def ingest_people(
                     "relationship": "worksAt",
                 }
             )
-    return await ingest_entities(entities, relationships, ingest=ingest)
+    return await STREAM.entities(entities, relationships, ingest=ingest)
 
 
 async def ingest_companies(
@@ -183,7 +137,7 @@ async def ingest_companies(
                 "externalToolId": str(cid),
             }
         )
-    return await ingest_entities(entities, None, ingest=ingest)
+    return await STREAM.entities(entities, None, ingest=ingest)
 
 
 async def ingest_opportunities(
@@ -231,7 +185,7 @@ async def ingest_opportunities(
                     "relationship": "pointOfContact",
                 }
             )
-    return await ingest_entities(entities, relationships, ingest=ingest)
+    return await STREAM.entities(entities, relationships, ingest=ingest)
 
 
 # --- response unwrap ---------------------------------------------------------

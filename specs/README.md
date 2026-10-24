@@ -13,3 +13,4 @@ Read the existing specs first. Extend the spec that owns the behavior. Create a 
 ## Local specifications
 
 [`CONN-TWENTY-MCP`](twenty-mcp/spec.md) — The Twenty connector sends GraphQL calls through the SDK shared client.
+- [`CONN-TWENTY-MCP-CONNECTOR-CONTENT`](connector-content/spec.md) — The connector serves its packaged content.

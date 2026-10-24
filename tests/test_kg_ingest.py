@@ -16,9 +16,9 @@ import pytest
 from agent_connector_sdk.ingest import IngestError, KnowledgeIngest
 
 from twenty_mcp.kg_ingest import (
+    STREAM,
     extract_records,
     ingest_companies,
-    ingest_entities,
     ingest_opportunities,
     ingest_people,
 )
@@ -52,7 +52,7 @@ def ingest():
 @pytest.mark.asyncio
 async def test_ingest_entities_writes_nodes_and_edges(ingest):
     service, transport = ingest
-    res = await ingest_entities(
+    res = await STREAM.entities(
         [
             {"id": "a", "node_type": "Person", "name": "p"},
             {"id": "b", "node_type": "Company"},
@@ -177,11 +177,11 @@ def test_extract_records_unwraps_twenty_response():
 async def test_retired_structural_alias_is_rejected(ingest):
     service, _ = ingest
     with pytest.raises(IngestError, match="id and a node_type"):
-        await ingest_entities([{"id": "a", "type": "Person"}], ingest=service)
+        await STREAM.entities([{"id": "a", "type": "Person"}], ingest=service)
 
 
 @pytest.mark.asyncio
 async def test_empty_native_ingest_is_rejected(ingest):
     service, _ = ingest
     with pytest.raises(IngestError, match="at least one entity"):
-        await ingest_entities([], ingest=service)
+        await STREAM.entities([], ingest=service)

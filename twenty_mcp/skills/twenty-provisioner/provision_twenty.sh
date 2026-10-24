@@ -7,8 +7,8 @@
 # -> getRoles -> createApiKey -> generateApiKeyToken, then validates against /rest.
 #
 # Usage:
-#   TWENTY_URL=http://twenty.arpa \
-#   TWENTY_EMAIL=admin@homelab.arpa TWENTY_PASSWORD='...' \
+#   TWENTY_URL=http://twenty.example \
+#   TWENTY_EMAIL=admin@homelab.example TWENTY_PASSWORD='...' \
 #   [SIGNUP=1] [KEY_NAME=egeria-harvester] [EXPIRES_AT=2125-01-01T00:00:00.000Z] \
 #   bash provision_twenty.sh
 #
@@ -16,7 +16,7 @@
 # Requires: curl, jq.
 set -uo pipefail
 
-URL="${TWENTY_URL:?set TWENTY_URL (e.g. http://twenty.arpa)}"
+URL="${TWENTY_URL:?set TWENTY_URL (e.g. http://twenty.example)}"
 EMAIL="${TWENTY_EMAIL:?set TWENTY_EMAIL}"
 PASSWORD="${TWENTY_PASSWORD:?set TWENTY_PASSWORD}"
 KEY_NAME="${KEY_NAME:-egeria-harvester}"

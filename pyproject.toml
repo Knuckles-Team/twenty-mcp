@@ -4,36 +4,28 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "twenty-mcp"
-version = "2.3.4"
+version = "2.3.5"
 description = "Twenty CRM REST/GraphQL MCP Server for Agentic AI!"
 readme = "README.md"
 classifiers = [ "Development Status :: 4 - Beta", "License :: OSI Approved :: MIT License", "Environment :: Console", "Operating System :: POSIX :: Linux", "Programming Language :: Python :: 3",]
 requires-python = ">=3.12, <3.15"
-dependencies = [ "agent-connector-sdk[mcp,graphql]>=0.4.1,<1.0.0", "requests>=2.34.2",]
+dependencies = [ "agent-connector-sdk[graphql,mcp]>=0.5.4,<0.6.0", "requests>=2.34.2",]
 [[project.authors]]
-name = "Project Maintainers"
-email = "maintainers@users.noreply.github.com"
+name = "Repository Maintainers"
+email = "maintainers@knuckles.team"
 
 [project.license]
 text = "MIT"
 
 [project.optional-dependencies]
-mcp = [ "agent-connector-sdk[mcp,graphql]>=0.4.1,<1.0.0",]
-all = [ "agent-connector-sdk[mcp,graphql]>=0.4.1,<1.0.0",]
 test = [ "pytest-xdist>=3.8.0", "pytest>=9.1.1", "pytest-asyncio>=1.4.0", "pytest-cov>=7.1.0",]
 
 [project.scripts]
-twenty-mcp = "twenty_mcp.mcp_server:mcp_server"
-
-[project.entry-points."agent_connector_sdk.skill_providers"]
-twenty-mcp = "twenty_mcp.skills"
-
-[project.entry-points."agent_connector_sdk.ontology_providers"]
-twenty-mcp = "twenty_mcp.ontology"
+twenty-mcp = "agent_connector_sdk.cli:serve"
 
 # The one declared connector identity: the fleet name (SDK-CONNECTOR-CONTROL-R071).
 [project.entry-points."agent_connector_sdk.connector"]
-twenty-mcp = "twenty_mcp"
+twenty-mcp = "twenty_mcp:connector"
 
 [tool.uv.workspace]
 members = ["."]
@@ -73,3 +65,6 @@ override-dependencies = [
 
 [tool.pipelines_hooks.ste]
 exempt = ["specs/*", "specs/**/*"]
+
+[tool.pipelines.container]
+compose_env = ["TWENTY_URL", "TWENTY_TOKEN"]
