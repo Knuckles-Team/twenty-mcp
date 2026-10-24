@@ -7,9 +7,6 @@ Served live as ``connector://resources``. Regenerate by editing the declarations
 from __future__ import annotations
 
 from agent_connector_sdk.ingest.live_declaration import source_meta
-from agent_connector_sdk.ingest.sources import IngestSourceDeclaration, IngestSourceSpec
-
-CONNECTOR = "twenty-mcp"
 
 SOURCES = (
     source_meta(
@@ -59,75 +56,41 @@ SOURCES = (
     ),
 )
 
+SCHEMA_VERSION = 2
+
+FIELD_SETS = {
+    "fields_1": {
+        "amount": "xsd:decimal",
+        "closeDate": "xsd:dateTime",
+        "currencyCode": "xsd:string",
+        "domainName": "xsd:string",
+        "employees": "xsd:integer",
+        "externalToolId": "xsd:string",
+        "jobTitle": "xsd:string",
+        "primaryEmail": "xsd:string",
+        "stage": "xsd:string",
+    },
+}
+
 SCHEMA_MAPPINGS = {
     "Company": {
-        "fields": {
-            "amount": "xsd:decimal",
-            "closeDate": "xsd:dateTime",
-            "currencyCode": "xsd:string",
-            "domainName": "xsd:string",
-            "employees": "xsd:integer",
-            "externalToolId": "xsd:string",
-            "jobTitle": "xsd:string",
-            "primaryEmail": "xsd:string",
-            "stage": "xsd:string",
-        },
+        "field_sets": ["fields_1"],
         "ontology_class": "Organization",
     },
     "CrmNote": {
-        "fields": {
-            "amount": "xsd:decimal",
-            "closeDate": "xsd:dateTime",
-            "currencyCode": "xsd:string",
-            "domainName": "xsd:string",
-            "employees": "xsd:integer",
-            "externalToolId": "xsd:string",
-            "jobTitle": "xsd:string",
-            "primaryEmail": "xsd:string",
-            "stage": "xsd:string",
-        },
+        "field_sets": ["fields_1"],
         "ontology_class": "Document",
     },
     "CrmTask": {
-        "fields": {
-            "amount": "xsd:decimal",
-            "closeDate": "xsd:dateTime",
-            "currencyCode": "xsd:string",
-            "domainName": "xsd:string",
-            "employees": "xsd:integer",
-            "externalToolId": "xsd:string",
-            "jobTitle": "xsd:string",
-            "primaryEmail": "xsd:string",
-            "stage": "xsd:string",
-        },
+        "field_sets": ["fields_1"],
         "ontology_class": "Action",
     },
     "Opportunity": {
-        "fields": {
-            "amount": "xsd:decimal",
-            "closeDate": "xsd:dateTime",
-            "currencyCode": "xsd:string",
-            "domainName": "xsd:string",
-            "employees": "xsd:integer",
-            "externalToolId": "xsd:string",
-            "jobTitle": "xsd:string",
-            "primaryEmail": "xsd:string",
-            "stage": "xsd:string",
-        },
+        "field_sets": ["fields_1"],
         "ontology_class": None,
     },
     "PipelineStage": {
-        "fields": {
-            "amount": "xsd:decimal",
-            "closeDate": "xsd:dateTime",
-            "currencyCode": "xsd:string",
-            "domainName": "xsd:string",
-            "employees": "xsd:integer",
-            "externalToolId": "xsd:string",
-            "jobTitle": "xsd:string",
-            "primaryEmail": "xsd:string",
-            "stage": "xsd:string",
-        },
+        "field_sets": ["fields_1"],
         "ontology_class": None,
     },
 }
@@ -159,22 +122,3 @@ RESOURCES = (
         "name": "PipelineStage",
     },
 )
-
-
-def declaration() -> IngestSourceDeclaration:
-    """The declaration the server assembles from this module."""
-    specs = []
-    for item in SOURCES:
-        for entry in item["connector_sources"]:
-            body = {k: v for k, v in entry.items() if k not in ("tool", "mapping")}
-            specs.append(
-                IngestSourceSpec.model_validate({**body, "tools": (entry["tool"],)})
-            )
-    return IngestSourceDeclaration.model_validate(
-        {
-            "connector": CONNECTOR,
-            "sources": specs,
-            "schema_mappings": SCHEMA_MAPPINGS,
-            "resources": RESOURCES,
-        }
-    )

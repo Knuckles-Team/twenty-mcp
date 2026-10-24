@@ -65,8 +65,8 @@ account is fully usable; the UI path completes this automatically.
 Run the bundled script (verified end-to-end):
 
 ```bash
-TWENTY_URL=http://twenty.arpa \
-TWENTY_EMAIL=admin@homelab.arpa TWENTY_PASSWORD='<password>' \
+TWENTY_URL=http://twenty.example \
+TWENTY_EMAIL=admin@homelab.example TWENTY_PASSWORD='<password>' \
 KEY_NAME=egeria-harvester \
 bash provision_twenty.sh        # prints the API key to stdout (capture once)
 ```

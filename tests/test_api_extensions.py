@@ -184,7 +184,7 @@ def test_webhook_signature_validation():
     """Verify HMAC SHA-256 webhook signature validation logic."""
     payload = '{"event":"person.created"}'
     timestamp = "1716612000"
-    secret = "super_secret_webhook_key"
+    secret = "super_secret_webhook_key"  # sanitizer:ignore - synthetic HMAC fixture, not a credential
 
     # Generate true signature: hmac(secret, "timestamp:payload")
     import hashlib

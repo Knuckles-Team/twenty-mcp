@@ -30,7 +30,7 @@ services:
       - PORT=3000
       - SERVER_URL=http://localhost:3000
       - FRONTEND_URL=http://localhost:3000
-      - PG_DATABASE_URL=postgresql://twenty:twenty@twenty-db:5432/twenty
+      - PG_DATABASE_URL=postgresql://USER:PASSWORD@twenty-db:5432/twenty
       - REDIS_URL=redis://twenty-redis:6379
       - STORAGE_TYPE=local
       - ACCESS_TOKEN_SECRET=change_me_access_secret
@@ -93,7 +93,7 @@ services:
     environment:
       - PORT=3000
       - SERVER_URL=http://twenty:3000
-      - PG_DATABASE_URL=postgresql://twenty:twenty@twenty-db:5432/twenty
+      - PG_DATABASE_URL=postgresql://USER:PASSWORD@twenty-db:5432/twenty
       - REDIS_URL=redis://twenty-redis:6379
       - STORAGE_TYPE=local
       - ACCESS_TOKEN_SECRET=change_me_access_secret
