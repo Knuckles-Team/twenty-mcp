@@ -40,6 +40,7 @@ configuration value is read from the environment.
 - :material-database-cog: **[Backing Platform](platform.md)** — deploy Twenty CRM with Docker.
 - :material-tag-multiple: **[Overview](overview.md)** — the dynamic facade architecture.
 - :material-tag-multiple: **[Concepts](concepts.md)** — the `CONCEPT:TWENTY-*` registry.
+- :material-chart-timeline-variant: **[Spec delivery](spec-delivery/)** — generated requirements, status, and evidence from the canonical Pages dashboard.
 
 </div>
 
