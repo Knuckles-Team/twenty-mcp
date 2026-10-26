@@ -30,8 +30,14 @@ auth lifecycle, MCP registrations, and packaged resources aligned.
   clients. Never put tokens in source, fixtures, logs, or error messages.
 - `twenty_mcp/mcp/` registers CRM, metadata, OAuth, GraphQL, and ingest actions;
   action names and registration switches are part of the connector contract.
-- `twenty_mcp/skills/`, `prompts/`, `ontology/`, and `connectors/` are package
-  resources exposed by the connector entry point.
+- `twenty_mcp/__init__.py` is the connector entry point: it binds the
+  `Connector` to `Api`/`get_client`, `twenty_mcp.mcp_server`, and the supported
+  transports.
+- `twenty_mcp/connector_sources.py` declares the live source and resource
+  mappings served through `connector://resources`.
+- `twenty_mcp/mcp_config.json`, `twenty_mcp/skills/`, and
+  `twenty_mcp/ontology/` are the actual package resource paths. The checked-in
+  repository prompt is `prompts/main_agent.md`.
 - `specs/connector-content/` and `specs/twenty-mcp/` own the specifications and
   generated status evidence.
 
