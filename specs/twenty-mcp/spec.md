@@ -1,6 +1,6 @@
 # CONN-TWENTY-MCP — Twenty CRM connector
 
-Owner: twenty-mcp. Cross-repo IDs: SDK-CONNECTOR-CONTROL-R030.1.
+Owner: twenty-mcp. Cross-repo IDs: SCION-CONNECTOR-CONTROL-R030.1.
 Public provenance: https://github.com/Knuckles-Team/agent-connector-sdk/pull/192
 
 ## Purpose and user stories
