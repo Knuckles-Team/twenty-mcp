@@ -13,7 +13,7 @@ description: >-
 license: MIT
 tags: [twenty, crm, knowledge-graph, ingestion, mcp]
 metadata:
-  author: Genius
+  author: Knuckles-Team
   version: '0.1.0'
 ---
 # Twenty → Knowledge Graph Sync

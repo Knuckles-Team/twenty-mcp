@@ -2,7 +2,7 @@
 
 Exercises the real ``ingest_entities`` / ``ingest_people`` / ``ingest_companies`` /
 ``ingest_opportunities`` seams against a fake transport boundary (no engine
-required), letting the SDK's own ``agent_connector_sdk.ingest`` request builder run
+required), letting the SDK's own ``scion_sdk.ingest`` request builder run
 on top of it, plus the ``extract_records`` response unwrap.
 CONCEPT:AU-KG.ingest.enterprise-source-extractor.
 """
@@ -13,7 +13,7 @@ from types import SimpleNamespace
 from typing import Any
 
 import pytest
-from agent_connector_sdk.ingest import IngestError, KnowledgeIngest
+from scion_sdk.ingest import IngestError, KnowledgeIngest
 
 from twenty_mcp.kg_ingest import (
     STREAM,

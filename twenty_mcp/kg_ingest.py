@@ -1,6 +1,6 @@
 """Native epistemic-graph ingestion for Twenty CRM records.
 
-All writes use the shared ``agent_connector_sdk.ingest`` knowledge-ingest facade.
+All writes use the shared ``scion_sdk.ingest`` knowledge-ingest facade.
 Nodes use canonical ``node_type`` and edges use canonical ``relationship``; nodes and
 edges commit in one request. Missing engine configuration, rejected records, and
 commit failures propagate as ``IngestUnavailableError``/``IngestError``.
@@ -11,7 +11,7 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from agent_connector_sdk.ingest import (
+from scion_sdk.ingest import (
     KnowledgeIngest,
     SourceStream,
 )

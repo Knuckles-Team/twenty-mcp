@@ -13,7 +13,7 @@ description: >-
 license: MIT
 tags: [twenty, crm, contacts, companies, people, mcp]
 metadata:
-  author: Genius
+  author: Knuckles-Team
   version: '0.1.0'
 ---
 # Twenty Contacts & Companies

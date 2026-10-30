@@ -3,8 +3,8 @@
 from unittest.mock import MagicMock, patch
 
 import pytest
-from agent_connector_sdk.exceptions import MissingParameterError, ParameterError
-from agent_connector_sdk.transports.graphql import GraphQLExecutionError
+from scion_sdk.exceptions import MissingParameterError, ParameterError
+from scion_sdk.transports.graphql import GraphQLExecutionError
 
 from twenty_mcp.twenty_gql import GraphQL
 
