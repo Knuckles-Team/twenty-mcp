@@ -13,7 +13,7 @@ description: >-
 license: MIT
 tags: [twenty, crm, opportunities, pipeline, sales, mcp]
 metadata:
-  author: Genius
+  author: Knuckles-Team
   version: '0.1.0'
 ---
 # Twenty Sales Pipeline

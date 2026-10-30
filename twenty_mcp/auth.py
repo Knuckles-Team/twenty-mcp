@@ -3,9 +3,9 @@
 import logging
 from typing import Any
 
-from agent_connector_sdk.config import setting
-from agent_connector_sdk.tls.profile import ResolvedTLSProfile
-from agent_connector_sdk.tls.resolve import resolve_tls_profile
+from scion_sdk.config import setting
+from scion_sdk.tls.profile import ResolvedTLSProfile
+from scion_sdk.tls.resolve import resolve_tls_profile
 
 from twenty_mcp.api_client import Api
 
@@ -46,7 +46,7 @@ def get_graphql_client(
     """Factory function to create the Twenty GraphQL client.
 
     Supports OIDC delegation (RFC 8693 token exchange via
-    ``agent_connector_sdk.auth.delegation``, when enabled) and a fixed-token
+    ``scion_sdk.auth.delegation``, when enabled) and a fixed-token
     fallback.
 
     Twenty allows unauthenticated auth-flow mutations, so a missing token is
@@ -68,7 +68,7 @@ def get_graphql_client(
         instance = "http://localhost"
 
     # --- Path 1: OIDC Delegation (RFC 8693 Token Exchange) ---
-    from agent_connector_sdk.auth.delegation import DelegationSettings
+    from scion_sdk.auth.delegation import DelegationSettings
 
     from twenty_mcp.twenty_gql import GraphQL
 
@@ -81,11 +81,11 @@ def get_graphql_client(
     if delegation_enabled:
         try:
             import httpx
-            from agent_connector_sdk.auth.delegation import (
+            from scion_sdk.auth.delegation import (
                 current_user_token,
                 exchange_token,
             )
-            from agent_connector_sdk.exceptions import LoginRequiredError
+            from scion_sdk.exceptions import LoginRequiredError
 
             settings = DelegationSettings.from_settings()
             subject_token = current_user_token()

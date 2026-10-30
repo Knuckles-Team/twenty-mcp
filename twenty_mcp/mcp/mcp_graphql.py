@@ -72,7 +72,7 @@ def register_graphql_tools(mcp: FastMCP):
         * ``{"source": "metadata-api", "metadata": <result>}``
         * ``{"error": <message>}`` on total failure.
         """
-        from agent_connector_sdk.mcp.graphql import (
+        from scion_sdk.mcp.graphql import (
             ctx_graphql_get_type_details,
             ctx_graphql_list_types,
         )
