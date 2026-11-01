@@ -2,4 +2,6 @@
 
 Governing spec: [spec.md](spec.md). Design: [plan.md](plan.md). Rows: [requirements.md](requirements.md).
 
-- [x] CONN-TWENTY-MCP-R001: Route `twenty_mcp/twenty_gql.py` through the SDK client and declare the `graphql` extra.
+Each task line reads `- [ ] T001 [P] [US1] <ID>-R012.4 description`. Tasks run producer first; a checked task has landed.
+
+- [x] T001 [US1] CONN-TWENTY-MCP-R001 Shared GraphQL client.
