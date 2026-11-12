@@ -1,4 +1,4 @@
-"""Native epistemic-graph ingestion for Twenty CRM records.
+"""Native medulla ingestion for Twenty CRM records.
 
 All writes use the shared ``scion_sdk.ingest`` knowledge-ingest facade.
 Nodes use canonical ``node_type`` and edges use canonical ``relationship``; nodes and

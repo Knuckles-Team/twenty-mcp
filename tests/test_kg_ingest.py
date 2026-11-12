@@ -1,4 +1,4 @@
-"""Native epistemic-graph typed-node ingestion — Wire-First coverage.
+"""Native medulla typed-node ingestion — Wire-First coverage.
 
 Exercises the real ``ingest_entities`` / ``ingest_people`` / ``ingest_companies`` /
 ``ingest_opportunities`` seams against a fake transport boundary (no engine

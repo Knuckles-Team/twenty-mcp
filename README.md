@@ -71,7 +71,7 @@ Pick the extra that matches what the operator want to run:
 
 | Extra | Installs | Use when |
 |-------|----------|----------|
-| `twenty-mcp[mcp]` | Connector-focused MCP server (`scion-sdk` — FastMCP/FastAPI + `epistemic-graph[full]`) | The operator only run the **MCP server** (smallest install / image) |
+| `twenty-mcp[mcp]` | Connector-focused MCP server (`scion-sdk` — FastMCP/FastAPI + `medulla[full]`) | The operator only run the **MCP server** (smallest install / image) |
 | `twenty-mcp[all]` | Everything (`mcp` + `agent` + `logfire`) | Development / both surfaces |
 
 ```bash
@@ -90,20 +90,20 @@ One multi-stage `docker/Dockerfile` builds the MCP-only image (`--target mcp`):
 
 | Image tag | Build target | Contents | Entrypoint |
 |-----------|--------------|----------|------------|
-| `example/twenty-mcp:mcp` | `--target mcp` | `twenty-mcp[mcp]` — **connector-focused**, includes `epistemic-graph[full]`; no model-orchestration stack | `twenty-mcp` |
+| `example/twenty-mcp:mcp` | `--target mcp` | `twenty-mcp[mcp]` — **connector-focused**, includes `medulla[full]`; no model-orchestration stack | `twenty-mcp` |
 
 ```bash
 docker build --target mcp   -t example/twenty-mcp:mcp    docker/   # connector-focused MCP server
 ```
 
-### Knowledge-graph database (`epistemic-graph`)
+### Knowledge-graph database (`medulla`)
 
-Scion SDK core dependency (`epistemic-graph[full]`). The `[mcp]` extra keeps
+Scion SDK core dependency (`medulla[full]`). The `[mcp]` extra keeps
 deployments can use the bundled engine. For production or shared state, run
-**epistemic-graph as a dedicated database service** and configure the runtime to use it.
+**medulla as a dedicated database service** and configure the runtime to use it.
 Deployment recipes (single-node + Raft HA), connection configuration, and architecture
 diagrams are documented in the
-[epistemic-graph deployment guide](https://knuckles-team.github.io/epistemic-graph/deployment/).
+[medulla deployment guide](https://knuckles-team.github.io/medulla/deployment/).
 
 ---
 
@@ -260,7 +260,7 @@ See [docs/overview.md](docs/overview.md) or [docs/concepts.md](docs/concepts.md)
 
 ## Architecture
 
-This package uses the standardized Agent-Utilities dynamic facade architecture:
+This package uses the standardized Meristem dynamic facade architecture:
 
 ```mermaid
 graph TD
