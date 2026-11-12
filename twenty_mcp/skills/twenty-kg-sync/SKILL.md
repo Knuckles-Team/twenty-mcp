@@ -2,7 +2,7 @@
 name: twenty-kg-sync
 skill_type: skill
 description: >-
-  Natively ingest Twenty CRM records into the epistemic-graph knowledge graph via
+  Natively ingest Twenty CRM records into the medulla knowledge graph via
   the twenty-mcp MCP server's `twenty_ingest_records` tool — pushing people,
   companies, and opportunities as typed `:Person` / `:Company` / `:Opportunity`
   nodes with `:worksAt` / `:opportunityFor` / `:pointOfContact` links. Use when the
@@ -18,7 +18,7 @@ metadata:
 ---
 # Twenty → Knowledge Graph Sync
 
-Native ingestion of Twenty CRM records into the ONE epistemic-graph knowledge
+Native ingestion of Twenty CRM records into the ONE medulla knowledge
 graph, as typed OWL nodes federated by the `twenty` ontology. The tool lists a
 Twenty object via the real CRM client and pushes each record as a graph node with
 its relationships — no separate ETL job.
@@ -36,7 +36,7 @@ its relationships — no separate ETL job.
 
 ## Prerequisites & environment
 Connect via the `mcp-client` skill against the **`twenty-mcp`** MCP server. A
-reachable epistemic-graph engine is required for the write to land; with no engine
+reachable medulla engine is required for the write to land; with no engine
 the tool **no-ops gracefully** (`"ingested": null`) and still reports what it listed.
 
 | Variable | Required | Notes |

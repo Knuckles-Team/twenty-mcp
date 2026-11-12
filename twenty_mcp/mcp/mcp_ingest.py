@@ -1,4 +1,4 @@
-"""MCP tools for native epistemic-graph ingestion of Twenty CRM records.
+"""MCP tools for native medulla ingestion of Twenty CRM records.
 
 CONCEPT:AU-KG.ingest.enterprise-source-extractor. Wire-First tools that list Twenty
 records via the real CRM client and push them into the knowledge graph as typed
@@ -45,7 +45,7 @@ def register_ingest_tools(mcp: FastMCP):
         client=Depends(get_client),
         ctx: Context | None = Field(default=None, description="MCP context"),
     ) -> dict:
-        """List a Twenty CRM object and natively ingest it into epistemic-graph.
+        """List a Twenty CRM object and natively ingest it into medulla.
 
         Maps records to typed :Person / :Company / :Opportunity nodes (+ :worksAt /
         :opportunityFor / :pointOfContact links) and pushes them via the fast engine
