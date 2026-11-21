@@ -6,6 +6,7 @@ Governing spec: [spec.md](spec.md).
 |---|---|---|---|
 | T-001 | `CONN-TWENTY-MCP-CONNECTOR-CONTENT-R001` | `tests/test_default_content_surfaces.py::test_default_content_surfaces` (planned) | `resources/list` includes `skill://` and `ontology://`; `prompts/list` includes each packaged prompt. |
 | T-002 | `CONN-TWENTY-MCP-CONNECTOR-CONTENT-R002` | `tests/test_surface_contracts.py` | The SDK surface and roll-up checks report no gap. |
+| T-003 | `CONN-TWENTY-MCP-CONNECTOR-CONTENT-R003` | `tests/test_pack_extends_core.py` | No core term is redeclared and no retired IRI base remains. |
 
 ## Negative and boundary cases
 
