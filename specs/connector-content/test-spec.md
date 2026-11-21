@@ -5,6 +5,7 @@ Governing spec: [spec.md](spec.md).
 | Test ID | Requirement | Proving test | Expected observation |
 |---|---|---|---|
 | T-001 | `CONN-TWENTY-MCP-CONNECTOR-CONTENT-R001` | `tests/test_default_content_surfaces.py::test_default_content_surfaces` (planned) | `resources/list` includes `skill://` and `ontology://`; `prompts/list` includes each packaged prompt. |
+| T-002 | `CONN-TWENTY-MCP-CONNECTOR-CONTENT-R002` | `tests/test_surface_contracts.py` | The SDK surface and roll-up checks report no gap. |
 
 ## Negative and boundary cases
 

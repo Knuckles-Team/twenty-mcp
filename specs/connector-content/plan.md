@@ -189,7 +189,10 @@ None. The constitution check passed.
 
 - `CONN-TWENTY-MCP-CONNECTOR-CONTENT-R001`: `twenty-mcp` in `pyproject.toml` runs `scion_sdk.cli:serve`, which builds the server from the `scion_sdk.connector` entry point `twenty_mcp:connector` (`twenty_mcp/__init__.py:8`); the SDK `Connector` then lists the packaged skills, ontology and prompts.
 
-### Cross-repo seams
+#
+- `CONN-TWENTY-MCP-CONNECTOR-CONTENT-R002`: the `scion_sdk.connector` entry point `twenty-mcp` resolves to `twenty_mcp/__init__.py::connector`, which serves `twenty_mcp/ontology/twenty.ttl`, `twenty_mcp/prompts`, `twenty_mcp/skills` and the declarations of `twenty_mcp/connector_contracts.py`.
+
+## Cross-repo seams
 
 None. The rows depend only on the published `scion-sdk` package, which the connector imports.
 
