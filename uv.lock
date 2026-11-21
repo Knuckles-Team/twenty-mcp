@@ -838,7 +838,7 @@ wheels = [
 
 [[package]]
 name = "medulla"
-version = "2.27.10"
+version = "3.3.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "httpx" },
@@ -846,12 +846,10 @@ dependencies = [
     { name = "pydantic" },
     { name = "pyoxigraph" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/9b/85/c0970a7dbbcf4decbe5f4f5e423e585879d795459b06a72eb44c3c286156/medulla-2.27.10.tar.gz", hash = "sha256:f2aa04d9368c519434a985bb1de7906cc32de2746867db024efdab6b67f4e484", size = 8218986, upload-time = "2026-10-29T14:02:59.299Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/66/ca/9de892de59063ba17d100a429b7aed900b1a51cb0406df2136fdafb9a557/medulla-2.27.10-cp39-abi3-macosx_11_0_arm64.whl", hash = "sha256:6a2464440aa022b096f4c5e2cff529f6bca32853d933b87d18e4902b943f88c1", size = 8248210, upload-time = "2026-10-29T14:49:57.797Z" },
-    { url = "https://files.pythonhosted.org/packages/46/22/8791361946604899c2b2af09771ab3912586f7e8f6c352bf3290dae37ad3/medulla-2.27.10-cp39-abi3-manylinux_2_28_aarch64.whl", hash = "sha256:4ae475226934aa1f5449c82cf1983d99a9ea7943f8fa2d2e22c6ef364e2e1391", size = 8441428, upload-time = "2026-10-29T14:31:51.914Z" },
-    { url = "https://files.pythonhosted.org/packages/f1/12/38d3ee0babbc94cdd18b90db6a7f6fc0e54b360317fb3bbf14f2bde8b4dd/medulla-2.27.10-cp39-abi3-manylinux_2_28_x86_64.whl", hash = "sha256:d6b82ad4d94a4813d24c34cb312408a1587d484fafc35e5665f36c26a5d82090", size = 9107200, upload-time = "2026-10-29T14:52:48.323Z" },
-    { url = "https://files.pythonhosted.org/packages/0e/d5/edfa00325c0efaae3d711e42785205fc8a004d1cdcaf1b0d923383a4d7bd/medulla-2.27.10-cp39-abi3-win_amd64.whl", hash = "sha256:01200899b0ab872fb7ccb9b1cab7035de851a5dc961ad17b38842769482a9e43", size = 9945068, upload-time = "2026-10-29T14:30:57.179Z" },
+    { url = "https://files.pythonhosted.org/packages/88/d6/c9897305c120d6be6e19c16a440738c2b6a86b321a5a69599200f630f663/medulla-3.3.4-cp39-abi3-macosx_11_0_arm64.whl", hash = "sha256:e236b53c2d70b52e9a7ee94c4c3d0e65502ca63edea6d0bf9695388c4d5c24f0", size = 104288870, upload-time = "2026-11-17T10:49:38.657Z" },
+    { url = "https://files.pythonhosted.org/packages/30/5d/4d1e97c971d4469b4ea72ca59242caab4a339cf6c553cbab2568ebae0135/medulla-3.3.4-cp39-abi3-manylinux_2_28_aarch64.whl", hash = "sha256:92b95ac8dd93ed47aebdcfd8234a3680349efa19a00b520afd537912000e1053", size = 96943266, upload-time = "2026-11-17T08:59:53.687Z" },
+    { url = "https://files.pythonhosted.org/packages/26/64/5de9bda4d88b49495773b49a31fc799d023a012f13ac7c1477429dc36428/medulla-3.3.4-cp39-abi3-manylinux_2_28_x86_64.whl", hash = "sha256:1462647a578bf8f9baa9b0d2a85fd26a4016969e9e1a1f48e98ff5cbfe393b38", size = 87493349, upload-time = "2026-11-17T12:31:08.082Z" },
 ]
 
 [[package]]
@@ -1642,7 +1640,7 @@ wheels = [
 
 [[package]]
 name = "scion-sdk"
-version = "0.6.4"
+version = "0.11.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
@@ -1655,9 +1653,9 @@ dependencies = [
     { name = "pydantic" },
     { name = "pyyaml" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/91/61/5a694538fe4b5c3313d18dfb2ddf28b3a15d9dd93eb6e32c4f5486326c62/scion_sdk-0.6.4.tar.gz", hash = "sha256:4441e8e543f65587def7e98a78246be303a95ca840acae73f92bdaa08d8ea10f", size = 1151330, upload-time = "2026-10-31T02:50:26.547Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b4/f6/8ed99aae71c476c6de3ffb3111cb274a26ca0b758389e928d8424aa07c9f/scion_sdk-0.11.3.tar.gz", hash = "sha256:b0818765792a6c63ba0ab5a0ef46580eb9f27c7bb357e09c8145cd647a6759bd", size = 1266647, upload-time = "2026-11-19T17:44:09.42Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/3a/34/2990f86ca875f09a7ddbc2179668635b54e058cfc704d7dfea6e397c4762/scion_sdk-0.6.4-py3-none-any.whl", hash = "sha256:b5535a9342a3f675e173c933fcb3e26b59bb2f603875ad419bfb4261486ab5d2", size = 1093413, upload-time = "2026-10-31T02:50:25.131Z" },
+    { url = "https://files.pythonhosted.org/packages/78/f4/86be5f2075f7c8c85b59d40f944c6ba19c18912f9ef57e26fec9b08019e0/scion_sdk-0.11.3-py3-none-any.whl", hash = "sha256:49fdbc9149bc322a7ded544acccc48e1b1b837a424a698644edf1930ccad2f35", size = 1225153, upload-time = "2026-11-19T17:44:08.033Z" },
 ]
 
 [package.optional-dependencies]
@@ -1716,7 +1714,7 @@ wheels = [
 
 [[package]]
 name = "twenty-mcp"
-version = "2.3.7"
+version = "2.3.8"
 source = { editable = "." }
 dependencies = [
     { name = "requests" },
@@ -1744,7 +1742,7 @@ requires-dist = [
     { name = "pytest-cov", marker = "extra == 'test'", specifier = ">=7.1.0" },
     { name = "pytest-xdist", marker = "extra == 'test'", specifier = ">=3.8.0" },
     { name = "requests", specifier = ">=2.34.2" },
-    { name = "scion-sdk", extras = ["graphql", "mcp"], specifier = ">=0.6.4,<0.7.0" },
+    { name = "scion-sdk", extras = ["graphql", "mcp"], specifier = ">=0.11.2,<0.12" },
 ]
 provides-extras = ["test"]
 

@@ -26,6 +26,14 @@ The fleet operator and the engine rely on this behaviour of `twenty-mcp`: `pypro
 
 1. **Given** the `twenty-mcp` connector built from the default branch, **When** `tests/test_default_content_surfaces.py::test_default_content_surfaces` runs, **Then** `resources/list` includes `skill://` and `ontology://`; `prompts/list` includes each packaged prompt.
 
+### User Story 2 - Surface completeness (Priority: P1)
+
+The fleet operator and the engine rely on this behaviour of `twenty-mcp`: every served tool carries its skill, prompt and tool-use contract, and the ontology rolls up to the core ontology. It is proven independently of the other stories.
+
+**Acceptance Scenarios**:
+
+1. **Given** the `twenty-mcp` connector built from the default branch, **When** `tests/test_surface_contracts.py` runs, **Then** the SDK surface check reports no gap and the roll-up check reports no orphan class.
+
 ### Edge Cases
 
 - The vendor service is unreachable or rejects the credential: the connector returns the SDK typed error and never a partial result.
