@@ -1,8 +1,8 @@
+@prefix core: <https://knuckles-team.github.io/ontology/core#> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix dc: <http://purl.org/dc/terms/> .
 @prefix : <https://knuckles-team.github.io/ontology/connector/twenty#> .
-@prefix core: <https://knuckles-team.github.io/ontology/core#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
@@ -10,38 +10,26 @@
 # Twenty CRM ontology — the customer-relationship model of a Twenty workspace:
 # people (contacts), companies (accounts), and the opportunities (deals) that link
 # them, plus the notes/tasks recorded against them. All classes and properties live
-# in the connector namespace and extend core classes. `core:Person` is REUSED from
-# the core ontology (never redefined here). Backs the twenty-mcp
+# in the connector namespace `:`; core terms are referenced by their core IRI. `core:Person` is REUSED from the hub (never redefined here). Backs the twenty-mcp
 # tool surface (twenty_mcp_crm get_people / get_companies / get_opportunities /
 # execute_gql / …).
 
 # --- classes (owl:Class) ---
 
-:Company a owl:Class ;
-    rdfs:label "Company" ;
-    rdfs:comment "A company (account) of a Twenty workspace (twenty_get_companies); the CRM view of a core company." ;
-    rdfs:subClassOf core:Company .
-
-
-:Opportunity a owl:Class ;
-    rdfs:label "Opportunity" ;
-    rdfs:comment "A sales opportunity / deal moving through pipeline stages (twenty_get_opportunities)." ;
-    rdfs:subClassOf core:Opportunity .
-
 :CrmNote a owl:Class ;
+    rdfs:subClassOf core:Document ;
     rdfs:label "CRM Note" ;
-    rdfs:comment "A free-text note attached to a person, company, or opportunity in Twenty." ;
-    rdfs:subClassOf core:Document .
+    rdfs:comment "A free-text note attached to a person, company, or opportunity in Twenty." .
 
 :CrmTask a owl:Class ;
+    rdfs:subClassOf core:Task ;
     rdfs:label "CRM Task" ;
-    rdfs:comment "An actionable to-do tracked against a CRM record in Twenty." ;
-    rdfs:subClassOf core:Task .
+    rdfs:comment "An actionable to-do tracked against a CRM record in Twenty." .
 
 :PipelineStage a owl:Class ;
+    rdfs:subClassOf core:Phase ;
     rdfs:label "Pipeline Stage" ;
-    rdfs:comment "A named stage in the opportunity sales pipeline (e.g. NEW, SCREENING, MEETING, PROPOSAL, CUSTOMER)." ;
-    rdfs:subClassOf core:Concept .
+    rdfs:comment "A named stage in the opportunity sales pipeline (e.g. NEW, SCREENING, MEETING, PROPOSAL, CUSTOMER)." .
 
 # NOTE: core:Person is provided by the core ontology and REUSED for Twenty contacts —
 # it is deliberately NOT redefined here.
@@ -52,24 +40,24 @@
     rdfs:label "works at" ;
     rdfs:comment "Links a Person (contact) to the Company they are associated with." ;
     rdfs:domain core:Person ;
-    rdfs:range :Company .
+    rdfs:range core:Company .
 
 :opportunityFor a owl:ObjectProperty ;
     rdfs:label "opportunity for" ;
     rdfs:comment "Links an Opportunity to the Company (account) it targets." ;
-    rdfs:domain :Opportunity ;
-    rdfs:range :Company .
+    rdfs:domain core:Opportunity ;
+    rdfs:range core:Company .
 
 :pointOfContact a owl:ObjectProperty ;
     rdfs:label "point of contact" ;
     rdfs:comment "Links an Opportunity to the Person who is its primary contact." ;
-    rdfs:domain :Opportunity ;
+    rdfs:domain core:Opportunity ;
     rdfs:range core:Person .
 
 :atStage a owl:ObjectProperty ;
     rdfs:label "at stage" ;
     rdfs:comment "Links an Opportunity to its current PipelineStage." ;
-    rdfs:domain :Opportunity ;
+    rdfs:domain core:Opportunity ;
     rdfs:range :PipelineStage .
 
 :noteOn a owl:ObjectProperty ;
@@ -80,23 +68,18 @@
     rdfs:label "task on" ;
     rdfs:comment "Links a CrmTask to the Person, Company, or Opportunity it concerns." .
 
-:assignedTo a owl:ObjectProperty ;
-    rdfs:label "assigned to" ;
-    rdfs:comment "Links a CrmTask or Opportunity to the Person (workspace member) who owns it." ;
-    rdfs:range core:Person .
-
 # --- fields (owl:DatatypeProperty) ---
 
 :domainName a owl:DatatypeProperty ;
     rdfs:label "domain name" ;
     rdfs:comment "Primary web domain of a Company (e.g. acme.com)." ;
-    rdfs:domain :Company ;
+    rdfs:domain core:Company ;
     rdfs:range xsd:string .
 
 :employees a owl:DatatypeProperty ;
     rdfs:label "employees" ;
     rdfs:comment "Head-count of a Company as recorded in Twenty." ;
-    rdfs:domain :Company ;
+    rdfs:domain core:Company ;
     rdfs:range xsd:integer .
 
 :jobTitle a owl:DatatypeProperty ;
@@ -111,33 +94,10 @@
     rdfs:domain core:Person ;
     rdfs:range xsd:string .
 
-:amount a owl:DatatypeProperty ;
-    rdfs:label "amount" ;
-    rdfs:comment "Monetary value of an Opportunity (major currency units)." ;
-    rdfs:domain :Opportunity ;
-    rdfs:range xsd:decimal .
-
-:currencyCode a owl:DatatypeProperty ;
-    rdfs:label "currency code" ;
-    rdfs:comment "ISO currency code of an Opportunity amount (e.g. USD)." ;
-    rdfs:domain :Opportunity ;
-    rdfs:range xsd:string .
-
 :stage a owl:DatatypeProperty ;
     rdfs:label "stage" ;
     rdfs:comment "Current pipeline stage label of an Opportunity (denormalized string form of :atStage)." ;
-    rdfs:domain :Opportunity ;
-    rdfs:range xsd:string .
-
-:closeDate a owl:DatatypeProperty ;
-    rdfs:label "close date" ;
-    rdfs:comment "Expected or actual close date of an Opportunity (ISO-8601)." ;
-    rdfs:domain :Opportunity ;
-    rdfs:range xsd:dateTime .
-
-:externalToolId a owl:DatatypeProperty ;
-    rdfs:label "external tool id" ;
-    rdfs:comment "Native Twenty record UUID of the object (used to derive the KG node id)." ;
+    rdfs:domain core:Opportunity ;
     rdfs:range xsd:string .
 
 <https://knuckles-team.github.io/ontology/connector/twenty> a owl:Ontology ;
@@ -145,4 +105,4 @@
     rdfs:comment """Twenty customer-relationship model — people (contacts), companies
     (accounts), and the opportunities/deals that link them, with their pipeline stages,
     notes and tasks — federated into the scion-sdk knowledge-graph hub. Reuses the
-    core Person class for contacts.""" .
+    shared :Person class for contacts.""" .
