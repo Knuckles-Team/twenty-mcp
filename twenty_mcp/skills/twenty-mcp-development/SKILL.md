@@ -19,6 +19,22 @@ typed CRM, metadata, OAuth, GraphQL, and knowledge-graph ingestion operations
 through action-routed MCP tools and a Pydantic-AI agent. Keep the API facade,
 auth lifecycle, MCP registrations, and packaged resources aligned.
 
+## Steps
+
+1. Identify the owning requirement with `git grep -n "<term>" -- specs` and verify a row exists before editing.
+2. Trace the changed action from its Pydantic input through `twenty_mcp/mcp/` to `twenty_mcp/api_client.py` or `twenty_mcp/twenty_gql.py`, and verify the endpoint choice is `/graphql` or `/metadata` as intended.
+3. Make one focused change with mock sessions only, and verify with `pytest -v` that the new and existing tests pass.
+4. Run the repository suite with `pre-commit run --all-files` and verify every hook passes.
+5. Stage reviewed paths only and verify with `git diff --cached --name-status` that no caches, tokens or generated output are included.
+
+## Failure recovery
+
+| Failure | Cause | Recovery |
+|---|---|---|
+| A test makes a live CRM call | A real session was used instead of the fake `requests.Session` | Replace it with the existing session mock and `pytest -v` the module again |
+| A pre-commit hook fails | Formatting, spelling or a gate rejected the change | Fix the reported cause in the file and re-stage it with `git add -- <path>` |
+| Auth operations fail in tests | They were routed to `/graphql` | Route login, API-key and role operations through `/metadata` with the Origin header |
+
 ## Repository map
 
 - `twenty_mcp/api_client.py` composes the REST facade from CRM, metadata, and

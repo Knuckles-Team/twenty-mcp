@@ -2,12 +2,7 @@
 name: twenty-oauth
 skill_type: skill
 description: >-
-  Handle Twenty OAuth and webhooks: read the server metadata (`twenty_get_oauth_discovery`), register a client
-  (`twenty_register_oauth_client`), exchange or refresh tokens (`twenty_exchange_oauth_token`,
-  `twenty_refresh_oauth_token`), get a server-to-server token (`twenty_client_credentials_oauth_token`) and
-  verify webhook signatures (`twenty_validate_webhook_signature`). Use when an application must sign in to
-  Twenty, renew a token, or trust an incoming webhook. Do NOT use for first-time workspace bootstrap and API
-  key creation (use twenty-provisioner) or for record data (use twenty-records).
+  Handle Twenty OAuth and webhooks: discovery, client registration, token exchange, refresh and client credentials, and webhook signature checks. Use when an application must sign in to Twenty, renew a token, or trust an incoming webhook. Do NOT use for day-0 bootstrap and API keys (twenty-provisioner) or record data (twenty-records).
 license: MIT
 tags: [twenty, crm, oauth, webhooks]
 metadata:
@@ -15,6 +10,8 @@ metadata:
   version: '0.2.0'
 ---
 # Twenty OAuth and Webhooks
+
+Scope: Handle Twenty OAuth and webhooks: read the server metadata (`twenty_get_oauth_discovery`), register a client (`twenty_register_oauth_client`), exchange or refresh tokens (`twenty_exchange_oauth_token`, `twenty_refresh_oauth_token`), get a server-to-server token (`twenty_client_credentials_oauth_token`) and verify webhook signatures (`twenty_validate_webhook_signature`). Use when an application must sign in to Twenty, renew a token, or trust an incoming webhook. Do NOT use for first-time workspace bootstrap and API key creation (use twenty-provisioner) or for record data (use twenty-records).
 
 ## When to use
 - Register an OAuth client for an application (RFC 7591).
@@ -30,6 +27,23 @@ metadata:
 Connect to the **`twenty-mcp`** MCP server. It needs `TWENTY_URL` (workspace base URL) and `TWENTY_TOKEN`
 (API key or access token). Every tool is a typed, per-operation call; there is no `action` argument.
 Tools that delete or drop data are marked destructive and need an explicit `confirm`.
+
+## Steps
+
+1. Read the server metadata with `twenty_get_oauth_discovery` and verify the grant you need is listed.
+2. Register the client with `twenty_register_oauth_client` and verify the response returns a `client_id`.
+3. Exchange the authorization code with `twenty_exchange_oauth_token`, including `code_verifier`, and verify an access token is returned.
+4. Renew before expiry with `twenty_refresh_oauth_token` and verify the new tokens, storing a rotated refresh token.
+5. Check an incoming webhook with `twenty_validate_webhook_signature` over the exact raw payload, and verify the result is valid and the `timestamp` is recent.
+
+## Failure recovery
+
+| Failure | Cause | Recovery |
+|---|---|---|
+| Registration is rejected | A grant type or redirect URI is not supported | Pick values listed by `twenty_get_oauth_discovery` and register again with them |
+| Token exchange returns invalid grant | The code expired or `code_verifier` does not match | Start a new authorization and pass the matching `code_verifier` |
+| Refresh fails | The refresh token was rotated and an old one was used | Use the newest refresh token that was stored |
+| Signature check fails | The payload was reformatted before checking | Pass the raw payload bytes unchanged with the original `signature` and `timestamp` |
 
 ## Tools
 | Tool | Use |

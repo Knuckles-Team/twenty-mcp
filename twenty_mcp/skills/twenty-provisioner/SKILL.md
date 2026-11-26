@@ -38,6 +38,23 @@ Every auth/admin/api-key call goes to `/metadata`, with an `Origin: <base-url>` 
 (Twenty resolves the workspace from it). GraphQL **introspection is disabled** — discover
 schema via the Metadata REST API instead (`/rest/metadata/objects|fields|relations`).
 
+## Steps
+
+1. Check the stack is up with `curl <url>/healthz` and verify the body is `{"status":"ok"}`.
+2. Create the first admin account through the UI signup or the `signUp` mutation on `/metadata`, and verify onboarding is finished by logging in.
+3. Mint the API key with `bash provision_twenty.sh` using `TWENTY_URL`, `TWENTY_EMAIL`, `TWENTY_PASSWORD` and `KEY_NAME`, and verify the script prints a key after its check of `/rest/companies` returns HTTP 200.
+4. Store the key as `TWENTY_TOKEN` in the service `.env` and in the secret vault, and verify by reading the stored entry back without echoing the value.
+5. Wire the key into `mcp_config.json` for `twenty-mcp`, and verify with `curl -H "Authorization: Bearer $API_KEY" "<url>/rest/companies?limit=1"` that HTTP 200 returns.
+
+## Failure recovery
+
+| Failure | Cause | Recovery |
+|---|---|---|
+| `createApiKey` fails with a missing role error | `roleId` was not passed | Call `getRoles` on `/metadata`, pick the admin role and pass its id as `roleId` |
+| Auth calls return 404 on `/graphql` | Auth operations were sent to the object schema | Send `signUp`, login and key mutations to `/metadata` with the `Origin` header |
+| SSO setup errors with undefined headers | SSO is an Enterprise feature absent from the Community image | Stay on email and password authentication, or use an Enterprise licence for SSO |
+| The key check returns 401 | The key was minted without a valid token step | Run `generateApiKeyToken` for the key and store the token it returns |
+
 ## Prerequisites (day-0)
 
 1. **Twenty stack deployed** (Portainer/GitOps). Compose must set `ACCESS_TOKEN_SECRET`,

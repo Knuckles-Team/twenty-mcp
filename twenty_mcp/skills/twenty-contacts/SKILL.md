@@ -2,12 +2,7 @@
 name: twenty-contacts
 skill_type: skill
 description: >-
-  Manage people (contacts) and companies (accounts) in Twenty CRM through the twenty-mcp tools:
-  find, read, create, update and delete a person or a company with the typed `twenty_*_person`
-  and `twenty_*_company` tools. Use when the agent must find a contact by name or email, look up or create
-  a company, link a person to an employer, or keep account details current. Do NOT use for deals
-  (use twenty-pipeline), for any other object or bulk change (use twenty-records), or for pushing
-  records into the knowledge graph (use twenty-kg-sync).
+  Manage people (contacts) and companies (accounts) in Twenty CRM through the twenty-mcp tools: find, read, create, update and delete a person or a company with the typed `twenty_<op>_person` and `twenty_<op>_company` tools. Use when the agent must find a contact by name or email, look up or create a company, link a person to an employer, or keep account details current.
 license: MIT
 tags: [twenty, crm, contacts, companies]
 metadata:
@@ -15,6 +10,8 @@ metadata:
   version: '0.2.0'
 ---
 # Twenty Contacts & Companies
+
+Scope: Manage people (contacts) and companies (accounts) in Twenty CRM through the twenty-mcp tools: find, read, create, update and delete a person or a company with the typed `twenty_<op>_person` and `twenty_<op>_company` tools. Use when the agent must find a contact by name or email, look up or create a company, link a person to an employer, or keep account details current. Do NOT use for deals (use twenty-pipeline), for any other object or bulk change (use twenty-records), or for pushing records into the knowledge graph (use twenty-kg-sync).
 
 People (`people`) and companies (`companies`) are the core of a Twenty workspace. A person links to
 its employer through `companyId`; an opportunity links to both.
@@ -35,6 +32,23 @@ its employer through `companyId`; an opportunity links to both.
 Connect to the **`twenty-mcp`** MCP server. It needs `TWENTY_URL` (workspace base URL) and `TWENTY_TOKEN`
 (API key or access token). Every tool is a typed, per-operation call; there is no `action` argument.
 Tools that delete or drop data are marked destructive and need an explicit `confirm`.
+
+## Steps
+
+1. Search first with `twenty_find_records` using `object_name` people or companies, and verify the result lists the matching record ids or is empty.
+2. Screen a new payload with `twenty_find_duplicates` and verify no existing record matches before creating.
+3. Create or change the record with `twenty_create_person`, `twenty_create_company`, `twenty_update_person` or `twenty_update_company`, and verify the call returns the record id.
+4. Read it back with `twenty_get_person` or `twenty_get_company` and verify the composite fields such as `emails.primaryEmail` hold the intended values.
+5. Delete with `twenty_delete_person` or `twenty_delete_company` only after the owner approves and `confirm=true` is passed, and verify a follow-up read returns not found.
+
+## Failure recovery
+
+| Failure | Cause | Recovery |
+|---|---|---|
+| Tool returns 401 or 403 | `TWENTY_TOKEN` is missing, expired or lacks access | Set a valid `TWENTY_TOKEN` for the `twenty-mcp` server and call the tool again with the same arguments |
+| A create returns a validation error on the name or email | Composite fields were sent flat | Send `name.firstName`, `name.lastName` and `emails.primaryEmail` in the nested shape shown in Gotchas |
+| `params_json` is rejected | It was sent as an object instead of a JSON string | Pass `params_json` as a JSON-encoded string |
+| A delete is refused | `confirm=true` was not supplied | Show the owner the record and pass `confirm=true` after approval |
 
 ## Tools
 | Tool | Use |
