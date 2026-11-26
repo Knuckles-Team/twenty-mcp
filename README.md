@@ -1,36 +1,40 @@
 # Twenty MCP
+## MCP
 
-[![Status](https://img.shields.io/badge/status-active-success)](https://github.com/genius-agents/twenty-mcp)
-[![Version](https://img.shields.io/badge/version-2.3.4-blue)](pyproject.toml)
-[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+![PyPI - Version](https://img.shields.io/pypi/v/twenty-mcp)
+![MCP Server](https://badge.mcpx.dev?type=server 'MCP Server')
+![PyPI - Downloads](https://img.shields.io/pypi/dd/twenty-mcp)
+![GitHub Repo stars](https://img.shields.io/github/stars/Knuckles-Team/twenty-mcp)
+![GitHub forks](https://img.shields.io/github/forks/Knuckles-Team/twenty-mcp)
+![GitHub contributors](https://img.shields.io/github/contributors/Knuckles-Team/twenty-mcp)
+![PyPI - License](https://img.shields.io/pypi/l/twenty-mcp)
+![GitHub](https://img.shields.io/github/license/Knuckles-Team/twenty-mcp)
+![GitHub last commit (by committer)](https://img.shields.io/github/last-commit/Knuckles-Team/twenty-mcp)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/Knuckles-Team/twenty-mcp)
+![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed/Knuckles-Team/twenty-mcp)
+![GitHub issues](https://img.shields.io/github/issues/Knuckles-Team/twenty-mcp)
+![GitHub top language](https://img.shields.io/github/languages/top/Knuckles-Team/twenty-mcp)
+![GitHub language count](https://img.shields.io/github/languages/count/Knuckles-Team/twenty-mcp)
+![GitHub repo size](https://img.shields.io/github/repo-size/Knuckles-Team/twenty-mcp)
+![GitHub repo file count (file type)](https://img.shields.io/github/directory-file-count/Knuckles-Team/twenty-mcp)
+![PyPI - Wheel](https://img.shields.io/pypi/wheel/twenty-mcp)
+![PyPI - Implementation](https://img.shields.io/pypi/implementation/twenty-mcp)
 
-> **Documentation** — Installation, deployment, usage across the MCP, API, and agent
-> interfaces, and guidance for provisioning the Twenty CRM platform are maintained in
-> the [official documentation](https://knuckles-team.github.io/twenty-mcp/).
-
-Twenty CRM Customer Relationship Management system orchestrator. Built with the highest architectural standards, incorporating dynamic facades, custom API routing, and FastMCP tool decoration.
-
-## Table of Contents
-- [Overview](#overview)
-- [Features](#features)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Configuration](#configuration)
-- [MCP Tools](#mcp-tools)
-- [Architecture](#architecture)
-- [Deployment](#deployment)
-- [Contributing](#contributing)
-- [License](#license)
+> **Documentation** — Installation, deployment, and usage across the API, CLI, MCP,
+> and A2A agent interfaces are maintained in the
+> [official documentation](https://knuckles-team.github.io/twenty-mcp/).
 
 ---
 
 ## Overview
 
+Twenty CRM Customer Relationship Management system orchestrator. Built with the highest architectural standards, incorporating dynamic facades, custom API routing, and FastMCP tool decoration.
+
 Twenty MCP provides a high-performance, model-optimized interface to Twenty capabilities. It isolates the model from underlying API transport complexity, ensuring safe, idempotent, and highly traceable system interactions.
 
 ---
 
-## Features
+## Key Features
 
 - **Dynamic Facade Orchestration**: Integrates multi-inheritance clients cleanly under a single facade.
 - **Battle-Tested Resilience**: Out-of-the-box credential authentication, connection polling, and request retry strategies.
@@ -39,7 +43,9 @@ Twenty MCP provides a high-performance, model-optimized interface to Twenty capa
 
 ---
 
-## ⚙️ Dynamic Tool Selection & Visibility
+## MCP
+
+### Dynamic Tool Selection & Visibility
 
 This MCP server supports dynamic toolset selection and visibility filtering at runtime. This allows the operator to restrict the set of exposed tools to prevent blowing up the LLM's context window.
 
@@ -58,124 +64,7 @@ The operator can configure tool filtering via multiple input channels:
 
 When query strings or parameters are provided, an LLM-free **Knowledge Graph resolution layer** (using `DynamicToolOrchestrator`) matches query intents against known tool tags, names, or descriptions, with safe fallback and automated 24-hour background cache refreshing.
 
-
----
-
-## Installation
-
-> **Install the connector-focused `[mcp]` extra.** Examples use `twenty-mcp[mcp]` to add
-> FastMCP / FastAPI through `scion-sdk`; the required Scion SDK core
-> enables model orchestration.
-
-Pick the extra that matches what the operator want to run:
-
-| Extra | Installs | Use when |
-|-------|----------|----------|
-| `twenty-mcp[mcp]` | Connector-focused MCP server (`scion-sdk` — FastMCP/FastAPI + `epistemic-graph[full]`) | The operator only run the **MCP server** (smallest install / image) |
-| `twenty-mcp[all]` | Everything (`mcp` + `agent` + `logfire`) | Development / both surfaces |
-
-```bash
-# Connector-focused MCP server (includes the shared graph engine)
-uv pip install "twenty-mcp[mcp]"
-
-# Agent runtime (adds model orchestration to the shared graph engine)
-
-# Everything (development)
-uv pip install "twenty-mcp[all]"      # or: python -m pip install "twenty-mcp[all]"
-```
-
-### Container images (`:mcp`)
-
-One multi-stage `docker/Dockerfile` builds the MCP-only image (`--target mcp`):
-
-| Image tag | Build target | Contents | Entrypoint |
-|-----------|--------------|----------|------------|
-| `example/twenty-mcp:mcp` | `--target mcp` | `twenty-mcp[mcp]` — **connector-focused**, includes `epistemic-graph[full]`; no model-orchestration stack | `twenty-mcp` |
-
-```bash
-docker build --target mcp   -t example/twenty-mcp:mcp    docker/   # connector-focused MCP server
-```
-
-### Knowledge-graph database (`epistemic-graph`)
-
-Scion SDK core dependency (`epistemic-graph[full]`). The `[mcp]` extra keeps
-deployments can use the bundled engine. For production or shared state, run
-**epistemic-graph as a dedicated database service** and configure the runtime to use it.
-Deployment recipes (single-node + Raft HA), connection configuration, and architecture
-diagrams are documented in the
-[epistemic-graph deployment guide](https://knuckles-team.github.io/epistemic-graph/deployment/).
-
----
-
-## Usage
-
-The operator can start the FastMCP server in stdio mode via Python module execution:
-
-```python
-import asyncio
-from twenty_mcp.mcp_server import get_mcp_instance
-
-
-async def main():
-    mcp = get_mcp_instance()
-    # Execute stdio loop or launch server
-    print("MCP Server ready.")
-
-
-if __name__ == "__main__":
-    asyncio.run(main())
-```
-
-For direct shell start, run:
-
-```bash
-python -m twenty_mcp.mcp_server
-```
-
----
-
-## Configuration
-
-The package is fully configurable via the environment variables listed below. A local
-template is provided inside [.env.example](.env.example) — copy it to `.env` and fill in
-the operator's service endpoint parameters before starting execution.
-
-### Connection & credentials
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `TWENTY_URL` | Twenty CRM Base Server URL | `http://localhost:3000` |
-| `TWENTY_TOKEN` | Developer authentication token | — |
-| `TWENTY_MCP_BASE_URL` | Base API URL to query | `http://localhost:3000/api` |
-| `TWENTY_API_PREFIX` | Twenty API custom path prefix | `http://localhost:3000/api/v1` |
-| `TWENTY_MCP_USERNAME` | Auth username for service | `admin` |
-| `TWENTY_MCP_PASSWORD` | Auth password for service | — |
-| `TWENTY_TLS_PROFILE` | Named outbound TLS policy from AgentConfig | `system` |
-
-### MCP server / transport
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `TRANSPORT` | `stdio`, `streamable-http`, or `sse` | `stdio` |
-| `HOST` | Bind host (HTTP transports) | `0.0.0.0` |
-| `PORT` | Bind port (HTTP transports) | `8000` |
-| `MCP_TOOL_MODE` | Tool surface: `condensed`, `verbose`, or `both` | `condensed` |
-| `MCP_ENABLED_TOOLS` / `MCP_DISABLED_TOOLS` | Comma-separated tool allow/deny list | — |
-| `MCP_ENABLED_TAGS` / `MCP_DISABLED_TAGS` | Comma-separated tag allow/deny list | — |
-
-### Tool toggles
-Each action-routed tool can be disabled individually via its toggle env var (set to `false`).
-The full list is in the [MCP Tools](#mcp-tools) table below
-(`CRMTOOL`, `METADATATOOL`, `OAUTHTOOL`, `GRAPHQLTOOL`).
-
-### Agent runtime (full `[agent]` runtime only)
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `MCP_URL` | URL of the MCP server the agent connects to | `http://localhost:8000/mcp` |
-| `PROVIDER` | LLM provider (e.g. `openai`) | `openai` |
-| `MODEL_ID` | Model id (e.g. `gpt-4o`) | `gpt-4o` |
-
----
-
-## MCP Tools
+### MCP Tools
 
 _Auto-generated from the live MCP server — do not edit by hand._
 
@@ -308,38 +197,7 @@ the detailed transport contract.
   `MCP_ALLOWED_HOSTS` in `AgentConfig`.
 <!-- END GENERATED: additional-deployment-options -->
 
-## Documentation
-
-The complete documentation is published as the
-[official documentation site](https://knuckles-team.github.io/twenty-mcp/) and is the
-recommended reference for installation, deployment, and day-to-day operation.
-
-| Page | Contents |
-|---|---|
-| [Installation](https://knuckles-team.github.io/twenty-mcp/installation/) | pip, source, extras, prebuilt Docker image |
-| [Deployment](https://knuckles-team.github.io/twenty-mcp/deployment/) | run the MCP and agent servers, Compose, Caddy + Technitium, env config |
-| [Usage](https://knuckles-team.github.io/twenty-mcp/usage/) | the MCP tools, the `Api` client, the A2A agent |
-| [Backing Platform](https://knuckles-team.github.io/twenty-mcp/platform/) | deploy Twenty CRM with Docker |
-| [Overview](https://knuckles-team.github.io/twenty-mcp/overview/) | the dynamic facade architecture |
-| [Concepts](https://knuckles-team.github.io/twenty-mcp/concepts/) | concept registry (`CONCEPT:TWENTY-*`) |
-
 ---
-
-## Contributing
-
-Please audit all code changes against the repository's contribution and review requirements, and run:
-
-```bash
-pre-commit run --all-files
-```
-
----
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for complete details.
-
-
 
 ## Environment Variables
 
@@ -393,6 +251,162 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 _12 package + 24 inherited variable(s). Auto-generated from `.env.example` + the shared scion-sdk set — do not edit._
 <!-- ENV-VARS-TABLE:END -->
+
+---
+
+## Installation
+
+> **Install the connector-focused `[mcp]` extra.** Examples use `twenty-mcp[mcp]` to add
+> FastMCP / FastAPI through `scion-sdk`; the required Scion SDK core
+> enables model orchestration.
+
+Pick the extra that matches what the operator want to run:
+
+| Extra | Installs | Use when |
+|-------|----------|----------|
+| `twenty-mcp[mcp]` | Connector-focused MCP server (`scion-sdk` — FastMCP/FastAPI + `epistemic-graph[full]`) | The operator only run the **MCP server** (smallest install / image) |
+| `twenty-mcp[all]` | Everything (`mcp` + `agent` + `logfire`) | Development / both surfaces |
+
+```bash
+# Connector-focused MCP server (includes the shared graph engine)
+uv pip install "twenty-mcp[mcp]"
+
+# Agent runtime (adds model orchestration to the shared graph engine)
+
+# Everything (development)
+uv pip install "twenty-mcp[all]"      # or: python -m pip install "twenty-mcp[all]"
+```
+
+### Container images (`:mcp`)
+
+One multi-stage `docker/Dockerfile` builds the MCP-only image (`--target mcp`):
+
+| Image tag | Build target | Contents | Entrypoint |
+|-----------|--------------|----------|------------|
+| `example/twenty-mcp:mcp` | `--target mcp` | `twenty-mcp[mcp]` — **connector-focused**, includes `epistemic-graph[full]`; no model-orchestration stack | `twenty-mcp` |
+
+```bash
+docker build --target mcp   -t example/twenty-mcp:mcp    docker/   # connector-focused MCP server
+```
+
+### Knowledge-graph database (`epistemic-graph`)
+
+Scion SDK core dependency (`epistemic-graph[full]`). The `[mcp]` extra keeps
+deployments can use the bundled engine. For production or shared state, run
+**epistemic-graph as a dedicated database service** and configure the runtime to use it.
+Deployment recipes (single-node + Raft HA), connection configuration, and architecture
+diagrams are documented in the
+[epistemic-graph deployment guide](https://knuckles-team.github.io/epistemic-graph/deployment/).
+
+---
+
+## Usage
+
+The operator can start the FastMCP server in stdio mode via Python module execution:
+
+```python
+import asyncio
+from twenty_mcp.mcp_server import get_mcp_instance
+
+
+async def main():
+    mcp = get_mcp_instance()
+    # Execute stdio loop or launch server
+    print("MCP Server ready.")
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+For direct shell start, run:
+
+```bash
+python -m twenty_mcp.mcp_server
+```
+
+---
+
+## Configuration
+
+The package is fully configurable via the environment variables listed below. A local
+template is provided inside [.env.example](.env.example) — copy it to `.env` and fill in
+the operator's service endpoint parameters before starting execution.
+
+### Connection & credentials
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `TWENTY_URL` | Twenty CRM Base Server URL | `http://localhost:3000` |
+| `TWENTY_TOKEN` | Developer authentication token | — |
+| `TWENTY_MCP_BASE_URL` | Base API URL to query | `http://localhost:3000/api` |
+| `TWENTY_API_PREFIX` | Twenty API custom path prefix | `http://localhost:3000/api/v1` |
+| `TWENTY_MCP_USERNAME` | Auth username for service | `admin` |
+| `TWENTY_MCP_PASSWORD` | Auth password for service | — |
+| `TWENTY_TLS_PROFILE` | Named outbound TLS policy from AgentConfig | `system` |
+
+### MCP server / transport
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `TRANSPORT` | `stdio`, `streamable-http`, or `sse` | `stdio` |
+| `HOST` | Bind host (HTTP transports) | `0.0.0.0` |
+| `PORT` | Bind port (HTTP transports) | `8000` |
+| `MCP_TOOL_MODE` | Tool surface: `condensed`, `verbose`, or `both` | `condensed` |
+| `MCP_ENABLED_TOOLS` / `MCP_DISABLED_TOOLS` | Comma-separated tool allow/deny list | — |
+| `MCP_ENABLED_TAGS` / `MCP_DISABLED_TAGS` | Comma-separated tag allow/deny list | — |
+
+### Tool toggles
+Each action-routed tool can be disabled individually via its toggle env var (set to `false`).
+The full list is in the [MCP Tools](#mcp-tools) table below
+(`CRMTOOL`, `METADATATOOL`, `OAUTHTOOL`, `GRAPHQLTOOL`).
+
+### Agent runtime (full `[agent]` runtime only)
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `MCP_URL` | URL of the MCP server the agent connects to | `http://localhost:8000/mcp` |
+| `PROVIDER` | LLM provider (e.g. `openai`) | `openai` |
+| `MODEL_ID` | Model id (e.g. `gpt-4o`) | `gpt-4o` |
+
+---
+
+## Documentation
+
+The complete documentation is published as the
+[official documentation site](https://knuckles-team.github.io/twenty-mcp/) and is the
+recommended reference for installation, deployment, and day-to-day operation.
+
+| Page | Contents |
+|---|---|
+| [Installation](https://knuckles-team.github.io/twenty-mcp/installation/) | pip, source, extras, prebuilt Docker image |
+| [Deployment](https://knuckles-team.github.io/twenty-mcp/deployment/) | run the MCP and agent servers, Compose, Caddy + Technitium, env config |
+| [Usage](https://knuckles-team.github.io/twenty-mcp/usage/) | the MCP tools, the `Api` client, the A2A agent |
+| [Backing Platform](https://knuckles-team.github.io/twenty-mcp/platform/) | deploy Twenty CRM with Docker |
+| [Overview](https://knuckles-team.github.io/twenty-mcp/overview/) | the dynamic facade architecture |
+| [Concepts](https://knuckles-team.github.io/twenty-mcp/concepts/) | concept registry (`CONCEPT:TWENTY-*`) |
+
+---
+
+## Repository Owners
+
+<img width="100%" height="180em" src="https://github-readme-stats.vercel.app/api?username=example&show_icons=true&hide_border=true&&count_private=true&include_all_commits=true" />
+
+![GitHub followers](https://img.shields.io/github/followers/example)
+![GitHub User's stars](https://img.shields.io/github/stars/example)
+
+---
+
+## Contribute
+
+Please audit all code changes against the repository's contribution and review requirements, and run:
+
+```bash
+pre-commit run --all-files
+```
+
+---
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for complete details.
 
 <!-- GOVERNED-CAPABILITY:START -->
 ## Governed capability contract
